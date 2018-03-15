@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">New Recycler</string>
+    <string name="good_state">не болеет</string>
+    <string name="bad_state">болеет</string>
+    <string name="has_schema">Лечение назначено</string>
+    <string name="no_schema">Лечение не назначено</string>
+    <string name="bless_you">Будьте Здоровы!</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+
+    <string name="tab_item_start_date">start date</string>
+    <string name="tab_item_symptoms">symptoms</string>
+    <string name="tab_item_plan">plan</string>
+
+
+
+    <string name="action_settings">Settings</string>
+</resources>

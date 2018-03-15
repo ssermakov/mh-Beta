@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/flipper_schema"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/schema_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="назначения врача (сделайте фото или введите вручную в поле ниже)"
+            android:textAlignment="center" />
+
+        <ImageButton
+            android:id="@+id/take_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/schema_hint"
+            android:layout_marginEnd="53dp"
+            android:src="@drawable/ic_add_a_photo_black_24dp" />
+
+        <EditText
+            android:id="@+id/schema"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignBottom="@+id/take_image"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="54dp"
+            android:hint="перечислите симтомы через запятую"
+            android:textAlignment="center"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="17dp"
+            android:layout_marginTop="15dp"
+            android:text="Button" />
+
+    </RelativeLayout>
+
+</LinearLayout>

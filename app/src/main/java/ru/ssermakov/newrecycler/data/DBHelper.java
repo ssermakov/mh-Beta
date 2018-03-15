@@ -2,7 +2,7 @@ package ru.ssermakov.newrecycler.data;
 
 /**
  * Created by btb_wild on 19.02.2018.
- */
+ *///
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

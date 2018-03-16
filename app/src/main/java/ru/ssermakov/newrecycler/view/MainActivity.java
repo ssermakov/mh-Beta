@@ -31,7 +31,7 @@ import java.util.List;
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.data.DBHelper;
 import ru.ssermakov.newrecycler.data.DataSource;
-import ru.ssermakov.newrecycler.data.PersonItem;
+import ru.ssermakov.newrecycler.data.Person;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     private static final int MY_PERMISSIONS_REQUEST_READ_MEDIA = 23;
     public static final String EXTRA_ID = "ID";
 
-    private List<PersonItem> listOfData;
+    private List<Person> listOfData;
 
     private LayoutInflater layoutInflater;
     private RecyclerView recyclerView;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     int currentId;
     private int currentPosition;
     private Uri imageUri;
-    private PersonItem currentPerson;
+    private Person currentPerson;
     private ImageView currentImageView;
 
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
 
 //    @Override
-//    public void takePhotoFromGallery(PersonItem person, int position) {
+//    public void takePhotoFromGallery(Person person, int position) {
 //        Intent i = new Intent(Intent.ACTION_PICK);
 //        i.setType("image/*");
 //        this.currentId = person.getId();
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 //    }
 
     @Override
-    public void setUpAdapterAndView(List<PersonItem> listOfData) {
+    public void setUpAdapterAndView(List<Person> listOfData) {
         this.listOfData = listOfData;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CustomAdapter();
@@ -244,17 +244,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
         @Override
         public void onBindViewHolder(final CustomViewHolder holder, final int position) {
-            PersonItem personItem = listOfData.get(position);
+            Person person = listOfData.get(position);
 
             holder.name.setText(
-                    personItem.getName()
+                    person.getName()
             );
 
 
 
 
 
-            if (personItem.getState().equals("не болеет")) {
+            if (person.getState().equals("не болеет")) {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.colorGood));
                 holder.illTextView.setText("Не болеет");
                 holder.schema.setText(getResources().getText(R.string.bless_you));
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             }
 
 
-            Uri uri = personItem.getImage();
+            Uri uri = person.getImage();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
             Cursor cursor = getContentResolver().query(
@@ -289,8 +289,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             View.OnClickListener oclConteiner = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    PersonItem personItem = listOfData.get(position);
-                    mainController.onPersonNameClick(personItem);
+                    Person person = listOfData.get(position);
+                    mainController.onPersonNameClick(person);
                 }
             };
             holder.container.setOnClickListener(oclConteiner);

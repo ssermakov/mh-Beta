@@ -1,11 +1,10 @@
 package ru.ssermakov.newrecycler.view.Interfaces;
 
 import android.net.Uri;
-import android.widget.ImageView;
 
 import java.util.List;
 
-import ru.ssermakov.newrecycler.data.PersonItem;
+import ru.ssermakov.newrecycler.data.Person;
 
 /**
  * Created by btb_wild on 19.02.2018.
@@ -15,7 +14,7 @@ public interface MainActivityViewInterface {
 
     void startPersonDetailActivity(String name, int backgroundColor, Uri image);
 
-    void setUpAdapterAndView (List<PersonItem> listOfData);
+    void setUpAdapterAndView (List<Person> listOfData);
 
     void startAddPersonActivity();
 
@@ -23,6 +22,6 @@ public interface MainActivityViewInterface {
 
     void toggleState(int position, int id);
 
-//    void takePhotoFromGallery (PersonItem person, int position);
+//    void takePhotoFromGallery (Person person, int position);
 }
 

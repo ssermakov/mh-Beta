@@ -6,14 +6,14 @@ import android.net.Uri;
  * Created by btb_wild on 19.02.2018.
  */
 
-public class PersonItem {
+public class Person {
     private String name;
     private int backgroundColor;
     private Uri image;
     private int id;
     private String state;
 
-    public PersonItem(int id, String name, int backgroundColor, Uri image, String state) {
+    public Person(int id, String name, int backgroundColor, Uri image, String state) {
         this.id = id;
         this.name = name;
         this.backgroundColor = backgroundColor;

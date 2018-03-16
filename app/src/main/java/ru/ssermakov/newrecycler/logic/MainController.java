@@ -1,7 +1,7 @@
 package ru.ssermakov.newrecycler.logic;
 
 import ru.ssermakov.newrecycler.data.DataSourceInterface;
-import ru.ssermakov.newrecycler.data.PersonItem;
+import ru.ssermakov.newrecycler.data.Person;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 
 
@@ -22,22 +22,17 @@ public class MainController {
     }
 
 
-
     private void getListFromDataSource() {
         mainActivityView.setUpAdapterAndView(dataSource.getListOfData());
     }
 
-    public void onPersonNameClick(PersonItem person) {
+    public void onPersonNameClick(Person person) {
         mainActivityView.startPersonDetailActivity(
                 person.getName(),
                 person.getBackgroundColor(),
                 person.getImage()
         );
     }
-//    public void onPersonImageClick(PersonItem person, int position, ImageView image) {
-//        mainActivityView.takePhotoFromGallery(person, position);
-//    }
-
 
     public void onAddPersonClick() {
         mainActivityView.startAddPersonActivity();

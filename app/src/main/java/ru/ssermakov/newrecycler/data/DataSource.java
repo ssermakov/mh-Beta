@@ -19,14 +19,13 @@ public class DataSource implements DataSourceInterface {
 
     public DataSource(DBHelper dbHelper) {
         this.dbHelper = dbHelper;
-
     }
 
 
     @Override
-    public List<PersonItem> getListOfData() {
-        ArrayList<PersonItem> listOfData = new ArrayList<>();
-        PersonItem person;
+    public List<Person> getListOfData() {
+        ArrayList<Person> listOfData = new ArrayList<>();
+        Person person;
         Cursor cursor;
         cursor = dbHelper.getReadableDatabase().query(
                 PatientsTable.TABLE_PATIENTS,
@@ -39,7 +38,7 @@ public class DataSource implements DataSourceInterface {
         );
 
         while (cursor.moveToNext()) {
-            person = new PersonItem(
+            person = new Person(
                     cursor.getInt(cursor.getColumnIndex(PatientsTable.COLUMN_ID)),
                     cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_NAME)),
                     R.color.colorGood,
@@ -64,15 +63,13 @@ public class DataSource implements DataSourceInterface {
         dbHelper.getWritableDatabase().insert(PatientsTable.TABLE_PATIENTS, null, cv);
 
 
-
-
     }
 
     @Override
     public int getLastPersonId() {
-        List<PersonItem> data = getListOfData();
+        List<Person> data = getListOfData();
         int size = data.size();
-        PersonItem last = data.get(size - 1);
+        Person last = data.get(size - 1);
         return last.getId();
     }
 
@@ -83,7 +80,7 @@ public class DataSource implements DataSourceInterface {
                 PatientsTable.TABLE_PATIENTS,
                 PatientsTable.COLUMN_ID + "=" + id,
                 null
-                );
+        );
     }
 
     @Override
@@ -102,7 +99,7 @@ public class DataSource implements DataSourceInterface {
                 null);
     }
 
-    private boolean isSick(int id){
+    private boolean isSick(int id) {
         Cursor cursor = dbHelper.getReadableDatabase().query(
                 PatientsTable.TABLE_PATIENTS,
                 null,
@@ -121,7 +118,6 @@ public class DataSource implements DataSourceInterface {
         cursor.close();
         return state;
     }
-
 
 
 }

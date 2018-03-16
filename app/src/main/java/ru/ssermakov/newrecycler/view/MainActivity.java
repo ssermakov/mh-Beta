@@ -96,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
 
     @Override
-    public void startPersonDetailActivity(String name, int backgroundColor, Uri image) {
+    public void startPersonDetailActivity(String name, /*int backgroundColor,*/ Uri image) {
         Intent i = new Intent(this, PersonDetailActivity.class);
-        i.putExtra(EXTRA_NAME, name);
-        i.putExtra(EXTRA_BACKGROUNDCOLOR, backgroundColor);
+        i.putExtra(EXTRA_NAME, name);/*
+        i.putExtra(EXTRA_BACKGROUNDCOLOR, backgroundColor);*/
         i.putExtra(EXTRA_IMAGE, image.toString());
 
         startActivity(i);

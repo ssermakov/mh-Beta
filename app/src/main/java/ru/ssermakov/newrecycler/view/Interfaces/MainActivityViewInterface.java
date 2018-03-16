@@ -12,7 +12,7 @@ import ru.ssermakov.newrecycler.data.Person;
 
 public interface MainActivityViewInterface {
 
-    void startPersonDetailActivity(String name, int backgroundColor, Uri image);
+    void startPersonDetailActivity(String name, /*int backgroundColor,*/ Uri image);
 
     void setUpAdapterAndView (List<Person> listOfData);
 

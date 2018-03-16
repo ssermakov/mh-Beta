@@ -28,8 +28,8 @@ public class MainController {
 
     public void onPersonNameClick(Person person) {
         mainActivityView.startPersonDetailActivity(
-                person.getName(),
-                person.getBackgroundColor(),
+                person.getName(),/*
+                person.getBackgroundColor(),*/
                 person.getImage()
         );
     }

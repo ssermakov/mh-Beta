@@ -40,8 +40,8 @@ public class DataSource implements DataSourceInterface {
         while (cursor.moveToNext()) {
             person = new Person(
                     cursor.getInt(cursor.getColumnIndex(PatientsTable.COLUMN_ID)),
-                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_NAME)),
-                    R.color.colorGood,
+                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_NAME)),/*
+                    R.color.colorGood,*/
                     Uri.parse(cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_IMAGE_URI))),
                     cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_CURRENT_STATE))
             );

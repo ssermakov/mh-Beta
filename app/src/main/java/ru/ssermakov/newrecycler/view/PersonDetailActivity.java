@@ -33,7 +33,7 @@ public class PersonDetailActivity extends AppCompatActivity {
         String nameExtra = i.getStringExtra(EXTRA_NAME);
         Uri imageUri = Uri.parse(i.getStringExtra(EXTRA_IMAGE));
 
-        name = (TextView) findViewById(R.id.name);
+        name = findViewById(R.id.name);
         name.setText(nameExtra);
 
         image = findViewById(R.id.image);
@@ -47,7 +47,6 @@ public class PersonDetailActivity extends AppCompatActivity {
 
         quantity = findViewById(R.id.quantity);
         quantity.setText("251");
-
 
 
     }

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface DataSourceInterface {
 
-    List<PersonItem> getListOfData();
+    List<Person> getListOfData();
 
 
     void addPersonToDb(String personName, Uri imageUri, String state);

@@ -18,9 +18,9 @@ public class Person {
 
     private String state;
 
+    private Uri image;
 
 //    private int backgroundColor;
-    private Uri image;
 
     public Person(int id, String name, /*int backgroundColor,*/ Uri image, String state) {
         this.id = id;

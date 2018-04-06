@@ -12,19 +12,18 @@ import java.sql.Date;
 @Entity(tableName = "patients")
 public class Patient {
 
-    @PrimaryKey
+    @PrimaryKey (autoGenerate = true)
     private int id;
 
     private String name;
 
-    private Date dateOfBirth;
+    private String dateOfBirth;
 
     private String state;
 
-    private Uri image;
+    private String image;
 
-    public Patient(int id, String name, Date dateOfBirth, String state, Uri image) {
-        this.id = id;
+    public Patient(String name, String dateOfBirth, String state, String image) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.state = state;
@@ -39,7 +38,7 @@ public class Patient {
         return name;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
@@ -47,7 +46,11 @@ public class Patient {
         return state;
     }
 
-    public Uri getImage() {
+    public String getImage() {
         return image;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

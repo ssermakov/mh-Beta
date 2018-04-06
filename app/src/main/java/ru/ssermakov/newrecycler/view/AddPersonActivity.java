@@ -3,9 +3,15 @@ package ru.ssermakov.newrecycler.view;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +21,19 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Calendar;
 
 import ru.ssermakov.newrecycler.R;
@@ -79,6 +97,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
 
         if (viewId == R.id.imageViewPhoto) {
             Intent i = new Intent(Intent.ACTION_PICK);
+//            i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             i.setType("image/*");
             startActivityForResult(i, GALLERY_REQUEST);
         }
@@ -104,17 +123,16 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
         if (requestCode == GALLERY_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Uri selectedImage = data.getData();
-                imageViewPhoto.setImageURI(selectedImage);
-                this.imageUri = selectedImage;
+                String fileName = getFileName(selectedImage);
+                String filePath = getRealPathFromURI(this, selectedImage);
+                File fileSource = new File(filePath);
 
-//                Uri selectedImage = data.getData();
-//                Bitmap bitmap = null;
-//                try {
-//                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                imageViewPhoto.setImageBitmap(bitmap);
+                File fileDst = new File(this.getFilesDir(), fileName);
+                copyFile (fileSource, fileDst);
+                Bitmap bm = BitmapFactory.decodeFile(fileDst.getPath());
+                imageViewPhoto.setImageBitmap(bm);
+//                this.imageUri = selectedImage;
+
             }
         }
     }
@@ -144,6 +162,66 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
         public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
             i1 = i1 + 1;
             age.setText(i2 + "/" + i1 + "/" + i);
+        }
+
+
+
+    }
+    private String getFileName(Uri selectedImage) {
+        String fileName = null;
+        if (selectedImage.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(
+                    selectedImage,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+            if (cursor != null && cursor.moveToFirst()) {
+                try {
+                    fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                } finally {
+                    cursor.close();
+                }
+            }
+            if (fileName == null) {
+
+                fileName = selectedImage.getPath();
+                int cut = fileName.lastIndexOf("/");
+                if (cut != -1) {
+                    fileName = fileName.substring(cut + 1);
+                }
+            }
+        }
+        return fileName;
+    }
+    private void copyFile(File fileSource, File fileDst) {
+        try {
+            InputStream is = new FileInputStream(fileSource);
+            OutputStream os = new FileOutputStream(fileDst);
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = is.read(buf)) > 0) {
+                os.write(buf, 0, len);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 }

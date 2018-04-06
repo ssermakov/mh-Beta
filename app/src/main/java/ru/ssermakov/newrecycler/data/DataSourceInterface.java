@@ -13,7 +13,7 @@ public interface DataSourceInterface {
     List<Person> getListOfData();
 
 
-    void addPersonToDb(String personName, Uri imageUri, String state);
+    void addPersonToDb(String personName, String filePath, String state);
 
     int getLastPersonId();
 

@@ -96,39 +96,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
 
     @Override
-    public void startPersonDetailActivity(String name, /*int backgroundColor,*/ Uri image) {
+    public void startPersonDetailActivity(String name, String image) {
         Intent i = new Intent(this, PersonDetailActivity.class);
-        i.putExtra(EXTRA_NAME, name);/*
-        i.putExtra(EXTRA_BACKGROUNDCOLOR, backgroundColor);*/
+        i.putExtra(EXTRA_NAME, name);
         i.putExtra(EXTRA_IMAGE, image.toString());
 
         startActivity(i);
     }
-
-
-//    @Override
-//    public void takePhotoFromGallery(Person person, int position) {
-//        Intent i = new Intent(Intent.ACTION_PICK);
-//        i.setType("image/*");
-//        this.currentId = person.getId();
-//        startActivityForResult(i, 20);
-//    }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        switch (requestCode) {
-//            case 20:
-//                if (requestCode == 20) {
-//                    final Uri imageUri = data.getData();
-////                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-////                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-//                    this.imageUri = imageUri;
-//                    currentPerson.setImage(imageUri);
-//                    currentImageView.setImageURI(currentPerson.getImage());
-//                }
-//        }
-//    }
 
     @Override
     public void setUpAdapterAndView(List<Person> listOfData) {
@@ -196,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     @Override
     public void toggleState(int position, int id) {
         if (listOfData.get(position).getState().equals("не болеет")) {
-            listOfData.get(position).setState("болеет");
             startBeginIllnessActivity(id);
+            listOfData.get(position).setState("болеет");
         } else {
             listOfData.get(position).setState("не болеет");
         }
@@ -263,26 +237,27 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                 holder.schema.setText(getResources().getText(R.string.no_schema));
             }
 
-
-            Uri uri = person.getImage();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-            Cursor cursor = getContentResolver().query(
-                    uri,
-                    filePathColumn,
-                    null,
-                    null,
-                    null
-            );
-            if (cursor != null) {
-                cursor.moveToFirst();
-
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
-                cursor.close();
-                Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-                holder.image.setImageBitmap(yourSelectedImage);
-                }
+            Bitmap bm = BitmapFactory.decodeFile(person.getImage());
+            holder.image.setImageBitmap(bm);
+//            Uri uri = person.getImage();
+//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//
+//            Cursor cursor = getContentResolver().query(
+//                    uri,
+//                    filePathColumn,
+//                    null,
+//                    null,
+//                    null
+//            );
+//            if (cursor != null) {
+//                cursor.moveToFirst();
+//
+//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                String filePath = cursor.getString(columnIndex);
+//                cursor.close();
+//                Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
+//                holder.image.setImageBitmap(yourSelectedImage);
+//                }
 
 
 

@@ -40,9 +40,8 @@ public class DataSource implements DataSourceInterface {
         while (cursor.moveToNext()) {
             person = new Person(
                     cursor.getInt(cursor.getColumnIndex(PatientsTable.COLUMN_ID)),
-                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_NAME)),/*
-                    R.color.colorGood,*/
-                    Uri.parse(cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_IMAGE_URI))),
+                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_NAME)),
+                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_IMAGE_URI)),
                     cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_CURRENT_STATE))
             );
             listOfData.add(person);
@@ -53,11 +52,11 @@ public class DataSource implements DataSourceInterface {
     }
 
     @Override
-    public void addPersonToDb(String personName, Uri imageUri, String state) {
+    public void addPersonToDb(String personName, String filePath, String state) {
         ContentValues cv = new ContentValues();
 
         cv.put(PatientsTable.COLUMN_NAME, personName);
-        cv.put(PatientsTable.COLUMN_IMAGE_URI, imageUri.toString());
+        cv.put(PatientsTable.COLUMN_IMAGE_URI, filePath);
         cv.put(PatientsTable.COLUMN_CURRENT_STATE, state);
 
         dbHelper.getWritableDatabase().insert(PatientsTable.TABLE_PATIENTS, null, cv);

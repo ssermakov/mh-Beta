@@ -18,8 +18,8 @@ public class AddPersonController {
         this.addPersonView = addPersonView;
     }
 
-    public void addPerson(String personName, Uri imageUri, String state) {
-        dataSource.addPersonToDb(personName, imageUri, state);
+    public void addPerson(String personName, String filePath, String state) {
+        dataSource.addPersonToDb(personName, filePath, state);
         int lastPersonId = dataSource.getLastPersonId();
         addPersonView.setPersonId(lastPersonId);
     }

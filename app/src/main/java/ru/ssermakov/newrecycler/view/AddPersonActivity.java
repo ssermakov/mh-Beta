@@ -51,7 +51,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
     private AddPersonController addPersonController;
     private int personId;
     FloatingActionButton floatingActionButton;
-    private Uri imageUri;
+    private String filePath;
     public final static String PERSON_ID = "PERSON_ID";
     private static TextView age;
 
@@ -86,7 +86,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
         if (viewId == R.id.fabCreateNewPerson) {
             String personName = editTextName.getText().toString().trim();
             String personState = getResources().getString(R.string.good_state);
-            addPersonController.addPerson(personName, imageUri, personState);
+            addPersonController.addPerson(personName, filePath, personState);
 
             Intent i = new Intent(this, MainActivity.class);
             i.putExtra(PERSON_ID, personId);
@@ -131,7 +131,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
                 copyFile (fileSource, fileDst);
                 Bitmap bm = BitmapFactory.decodeFile(fileDst.getPath());
                 imageViewPhoto.setImageBitmap(bm);
-//                this.imageUri = selectedImage;
+                this.filePath = fileDst.getPath();
 
             }
         }

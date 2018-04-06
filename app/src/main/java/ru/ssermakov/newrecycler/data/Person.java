@@ -18,11 +18,11 @@ public class Person {
 
     private String state;
 
-    private Uri image;
+    private String image;
 
 //    private int backgroundColor;
 
-    public Person(int id, String name, /*int backgroundColor,*/ Uri image, String state) {
+    public Person(int id, String name, /*int backgroundColor,*/ String image, String state) {
         this.id = id;
         this.name = name;
 //        this.backgroundColor = backgroundColor;
@@ -46,7 +46,7 @@ public class Person {
 //        this.backgroundColor = backgroundColor;
 //    }
 
-    public Uri getImage() {
+    public String getImage() {
         return image;
     }
 

@@ -2,9 +2,10 @@ package ru.ssermakov.newrecycler.data.room;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.net.Uri;
 
-import java.sql.Date;
+import java.util.Date;
+
+import ru.ssermakov.newrecycler.data.room.converter.DateConverter;
 
 /**
  * Created by btb_wild on 26.03.2018.

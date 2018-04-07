@@ -22,7 +22,7 @@ public interface PatientDao {
     Patient getById(long id);
 
     @Insert
-    void insert (Patient patient);
+    Long insert (Patient patient);
 
     @Update
     void update (Patient patient);

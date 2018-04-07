@@ -20,15 +20,15 @@ public class PatientRepository {
         return patientDao.getById(id) ;
     }
 
-    void insertPatientToDb (Patient patient) {
-        patientDao.insert(patient);
+    public Long insertPatientToDb (Patient patient) {
+        return patientDao.insert(patient);
     }
 
-    void updatePatientInDb (Patient patient) {
+    public void updatePatientInDb (Patient patient) {
         patientDao.update(patient);
     }
 
-    void deletePatientFromDb (Patient patient) {
+    public void deletePatientFromDb (Patient patient) {
         patientDao.delete(patient);
     }
 }

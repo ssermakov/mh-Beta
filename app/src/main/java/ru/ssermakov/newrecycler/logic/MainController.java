@@ -35,7 +35,6 @@ public class MainController {
 
     public void onAddPersonClick() {
         mainActivityView.startAddPersonActivity();
-//        mainActivityView.addPersonToView(AddPersonController.person);
     }
 
     public void onPersonSwipedToChangeState(int position, int id) {

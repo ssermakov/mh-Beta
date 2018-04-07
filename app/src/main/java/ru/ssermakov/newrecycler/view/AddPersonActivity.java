@@ -21,9 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,14 +29,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.data.DBHelper;
 import ru.ssermakov.newrecycler.data.DataSource;
+import ru.ssermakov.newrecycler.data.room.Patient;
 import ru.ssermakov.newrecycler.logic.AddPersonController;
 import ru.ssermakov.newrecycler.view.Interfaces.PersonActivityInterface;
 
@@ -49,6 +49,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
     private EditText editTextName;
     private ImageView imageViewPhoto;
     private AddPersonController addPersonController;
+    private AddPersonController addPatientController;
     private int personId;
     FloatingActionButton floatingActionButton;
     private String filePath;
@@ -76,7 +77,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
                 ), this
         );
 
-
+        addPatientController = new AddPersonController();
     }
 
 
@@ -86,7 +87,17 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
         if (viewId == R.id.fabCreateNewPerson) {
             String personName = editTextName.getText().toString().trim();
             String personState = getResources().getString(R.string.good_state);
+            Date dateOfBirth = convertStringToDate(age.getText().toString());
+
+//            new db
+            Patient patient = new Patient(personName, dateOfBirth, personState, filePath);
+            addPatientController.addPatient(patient);
+            Long insertedPatientId = addPersonController.getInsertedPatientId();
+
+
+//            old db
             addPersonController.addPerson(personName, filePath, personState);
+
 
             Intent i = new Intent(this, MainActivity.class);
             i.putExtra(PERSON_ID, personId);
@@ -97,7 +108,6 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
 
         if (viewId == R.id.imageViewPhoto) {
             Intent i = new Intent(Intent.ACTION_PICK);
-//            i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             i.setType("image/*");
             startActivityForResult(i, GALLERY_REQUEST);
         }
@@ -166,6 +176,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
 
 
 
+
     }
     private String getFileName(Uri selectedImage) {
         String fileName = null;
@@ -223,5 +234,15 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
                 cursor.close();
             }
         }
+    }
+    private Date convertStringToDate(String string) {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = null;
+        try {
+            date = dateFormat.parse(string);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 }

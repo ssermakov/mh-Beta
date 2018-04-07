@@ -14,16 +14,12 @@ public class Patient {
 
     @PrimaryKey (autoGenerate = true)
     private int id;
-
     private String name;
-
-    private String dateOfBirth;
-
+    private Date dateOfBirth;
     private String state;
-
     private String image;
 
-    public Patient(String name, String dateOfBirth, String state, String image) {
+    public Patient(String name, Date dateOfBirth, String state, String image) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.state = state;
@@ -38,7 +34,7 @@ public class Patient {
         return name;
     }
 
-    public String getDateOfBirth() {
+    public Date getDateOfBirth() {
         return dateOfBirth;
     }
 

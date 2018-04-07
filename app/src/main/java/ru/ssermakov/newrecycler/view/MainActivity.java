@@ -224,10 +224,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                     person.getName()
             );
 
-
-
-
-
             if (person.getState().equals("не болеет")) {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.colorGood));
                 holder.illTextView.setText("Не болеет");
@@ -239,27 +235,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
             Bitmap bm = BitmapFactory.decodeFile(person.getImage());
             holder.image.setImageBitmap(bm);
-//            Uri uri = person.getImage();
-//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-//            Cursor cursor = getContentResolver().query(
-//                    uri,
-//                    filePathColumn,
-//                    null,
-//                    null,
-//                    null
-//            );
-//            if (cursor != null) {
-//                cursor.moveToFirst();
-//
-//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                String filePath = cursor.getString(columnIndex);
-//                cursor.close();
-//                Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-//                holder.image.setImageBitmap(yourSelectedImage);
-//                }
-
-
 
             View.OnClickListener oclConteiner = new View.OnClickListener() {
                 @Override

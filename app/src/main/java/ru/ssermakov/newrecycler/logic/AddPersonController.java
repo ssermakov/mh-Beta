@@ -2,6 +2,8 @@ package ru.ssermakov.newrecycler.logic;
 
 import android.os.AsyncTask;
 
+import java.util.concurrent.ExecutionException;
+
 import ru.ssermakov.newrecycler.app.App;
 import ru.ssermakov.newrecycler.data.DataSourceInterface;
 import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
@@ -19,7 +21,6 @@ public class AddPersonController {
     PersonActivityInterface addPersonView;
 
     PatientDao patientDao;
-    private Long insertedPatientId;
 
     public AddPersonController() {
         MedicalHistoryDatabase db = App.getInstance().getDb();
@@ -31,27 +32,20 @@ public class AddPersonController {
         this.addPersonView = addPersonView;
     }
 
-    public void addPerson(String personName, String filePath, String state) {
-        dataSource.addPersonToDb(personName, filePath, state);
-        int lastPersonId = dataSource.getLastPersonId();
-        addPersonView.setPersonId(lastPersonId);
+    public Long addPatient(Patient patient) throws ExecutionException, InterruptedException {
+        AddPatientTask task = new AddPatientTask();
+        task.execute(patient);
+        return task.get();
+
     }
 
-    public void addPatient(Patient patient) {
-        new AddPatientTask().execute(patient);
-    }
-
-    public Long getInsertedPatientId() {
-        return insertedPatientId;
-    }
-
-    private class AddPatientTask extends AsyncTask<Patient, Void, Void> {
+    private class AddPatientTask extends AsyncTask<Patient, Void, Long> {
 
         @Override
-        protected Void doInBackground(Patient... patients) {
+        protected Long doInBackground(Patient... patients) {
             Long lastPatientId = patientDao.insert(patients[0]);
-            insertedPatientId = lastPatientId;
-            return null;
+            return lastPatientId;
         }
     }
+
 }

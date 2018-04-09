@@ -27,11 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.data.DBHelper;
 import ru.ssermakov.newrecycler.data.DataSource;
 import ru.ssermakov.newrecycler.data.Person;
+import ru.ssermakov.newrecycler.data.room.Patient;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 
@@ -44,7 +46,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     private static final int MY_PERMISSIONS_REQUEST_READ_MEDIA = 23;
     public static final String EXTRA_ID = "ID";
 
-    private List<Person> listOfData;
+//    private List<Person> listOfData;
+    private List<Patient> listOfData;
 
     private LayoutInflater layoutInflater;
     private RecyclerView recyclerView;
@@ -69,19 +72,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         recyclerView = findViewById(R.id.f_recycler);
         layoutInflater = getLayoutInflater();
 
-        mainController = new MainController(
-                this,
-                new DataSource(
-                        new DBHelper(this)
-                )
-        );
+        mainController = new MainController(this);
+
 
         Intent i = getIntent();
-        int id = i.getIntExtra(AddPersonActivity.PERSON_ID, 0);
-        String date = i.getStringExtra("date");
-        String hint = i.getStringExtra("hint");
-        recyclerView.smoothScrollToPosition(id);
-        showToast("Create");
+        Long id = i.getLongExtra(AddPersonActivity.PERSON_ID, 0);
+        recyclerView.smoothScrollToPosition(id.intValue());
 
         // requesting permissions
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -105,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     }
 
     @Override
-    public void setUpAdapterAndView(List<Person> listOfData) {
+    public void setUpAdapterAndView(List<Patient> listOfData) {
         this.listOfData = listOfData;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CustomAdapter();
@@ -129,13 +125,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == 4) {
-                    mainController.onPersonSwipedToChangeState(
-                            position,
-                            listOfData.get(position).getId());
+                    try {
+                        mainController.onPersonSwipedToChangeState(
+                                position,
+                                listOfData.get(position));
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     mainController.onPersonSwipedToDelete(
                             position,
-                            listOfData.get(position).getId());
+                            listOfData.get(position));
                 }
             }
 
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         return simpleItemTouchCallback;
     }
 
+
     @Override
     public void startAddPersonActivity() {
         Intent i = new Intent(this, AddPersonActivity.class);
@@ -162,18 +165,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     @Override
     public void deletePersonAt(int position) {
         listOfData.remove(position);
-
         adapter.notifyItemRemoved(position);
 
     }
 
     @Override
     public void toggleState(int position, int id) {
-        if (listOfData.get(position).getState().equals("не болеет")) {
+        if (listOfData.get(position).getState().equals("болеет")) {
             startBeginIllnessActivity(id);
-            listOfData.get(position).setState("болеет");
-        } else {
-            listOfData.get(position).setState("не болеет");
         }
         adapter.notifyItemChanged(position);
     }
@@ -218,13 +217,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
         @Override
         public void onBindViewHolder(final CustomViewHolder holder, final int position) {
-            Person person = listOfData.get(position);
+//            Person person = listOfData.get(position);
+            Patient patient = listOfData.get(position);
 
             holder.name.setText(
-                    person.getName()
+                    patient.getName()
             );
 
-            if (person.getState().equals("не болеет")) {
+            if (patient.getState().equals("не болеет")) {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.colorGood));
                 holder.illTextView.setText("Не болеет");
                 holder.schema.setText(getResources().getText(R.string.bless_you));
@@ -233,14 +233,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                 holder.schema.setText(getResources().getText(R.string.no_schema));
             }
 
-            Bitmap bm = BitmapFactory.decodeFile(person.getImage());
+            Bitmap bm = BitmapFactory.decodeFile(patient.getImage());
             holder.image.setImageBitmap(bm);
 
             View.OnClickListener oclConteiner = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Person person = listOfData.get(position);
-                    mainController.onPersonNameClick(person);
+//                    Person person = listOfData.get(position);
+                    Patient patient = listOfData.get(position);
+                    mainController.onPersonNameClick(patient);
                 }
             };
             holder.container.setOnClickListener(oclConteiner);

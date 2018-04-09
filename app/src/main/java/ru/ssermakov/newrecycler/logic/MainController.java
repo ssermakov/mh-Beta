@@ -1,7 +1,15 @@
 package ru.ssermakov.newrecycler.logic;
 
+import android.os.AsyncTask;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import ru.ssermakov.newrecycler.app.App;
 import ru.ssermakov.newrecycler.data.DataSourceInterface;
-import ru.ssermakov.newrecycler.data.Person;
+import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
+import ru.ssermakov.newrecycler.data.room.Patient;
+import ru.ssermakov.newrecycler.data.room.PatientDao;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 
 
@@ -14,22 +22,43 @@ public class MainController {
     private MainActivityViewInterface mainActivityView;
     private DataSourceInterface dataSource;
 
-    public MainController(MainActivityViewInterface view, DataSourceInterface dataSource) {
+    private PatientDao patientDao;
+
+    public MainController(MainActivityViewInterface view/*, DataSourceInterface dataSource*/) {
         this.mainActivityView = view;
-        this.dataSource = dataSource;
+//        this.dataSource = dataSource;
+        MedicalHistoryDatabase db = App.getInstance().getDb();
+        this.patientDao = db.patientDao();
 
         getListFromDataSource();
     }
 
 
     private void getListFromDataSource() {
-        mainActivityView.setUpAdapterAndView(dataSource.getListOfData());
+//        mainActivityView.setUpAdapterAndView(dataSource.getListOfData());
+        GetListFromDataSourceTask task = new GetListFromDataSourceTask();
+        task.execute();
+        try {
+           List<Patient> patients =task.get();
+           mainActivityView.setUpAdapterAndView(task.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    public void onPersonNameClick(Person person) {
+    //    public void onPersonNameClick(Person person) {
+//        mainActivityView.startPersonDetailActivity(
+//                person.getName(),
+//                person.getImage()
+//        );
+//    }
+    public void onPersonNameClick(Patient patient) {
         mainActivityView.startPersonDetailActivity(
-                person.getName(),
-                person.getImage()
+                patient.getName(),
+                patient.getImage()
         );
     }
 
@@ -37,13 +66,54 @@ public class MainController {
         mainActivityView.startAddPersonActivity();
     }
 
-    public void onPersonSwipedToChangeState(int position, int id) {
-        dataSource.toggleState(id);
-        mainActivityView.toggleState(position, id);
+    public void onPersonSwipedToChangeState(int position, Patient patient) throws ExecutionException, InterruptedException {
+        patient = toggleState(patient);
+        TogglePatientStateTask task = new TogglePatientStateTask();
+        task.execute(patient);
+        if (task.get()) {
+            mainActivityView.toggleState(position, patient.getId());
+        }
     }
 
-    public void onPersonSwipedToDelete(int position, int id) {
-        dataSource.deletePerson(id);
+    public void onPersonSwipedToDelete(int position, Patient patient) {
+        new DeletePatientTask().execute(patient);
         mainActivityView.deletePersonAt(position);
+    }
+
+    private Patient toggleState(Patient patient) {
+        if (patient.getState().equalsIgnoreCase("не болеет")) {
+            patient.setState("болеет");
+        } else patient.setState("не болеет");
+        return patient;
+    }
+
+    private class GetListFromDataSourceTask extends AsyncTask<Void, Void, List<Patient>> {
+
+        @Override
+        protected List<Patient> doInBackground(Void... voids) {
+            List<Patient> patientList = patientDao.getAll();
+            return patientList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Patient> patients) {
+            super.onPostExecute(patients);
+        }
+    }
+    private class DeletePatientTask extends AsyncTask<Patient, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Patient... patients) {
+            patientDao.delete(patients[0]);
+            return null;
+        }
+    }
+    private class TogglePatientStateTask extends AsyncTask<Patient, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Patient... patients) {
+            patientDao.update(patients[0]);
+            return true;
+        }
     }
 }

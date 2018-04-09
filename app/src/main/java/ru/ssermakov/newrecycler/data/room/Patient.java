@@ -20,6 +20,9 @@ public class Patient {
     private String state;
     private String image;
 
+    public Patient() {
+    }
+
     public Patient(String name, Date dateOfBirth, String state, String image) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
@@ -49,5 +52,21 @@ public class Patient {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

@@ -34,6 +34,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.data.DBHelper;
@@ -55,6 +56,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
     private String filePath;
     public final static String PERSON_ID = "PERSON_ID";
     private static TextView age;
+    Long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +73,6 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
         imageViewPhoto.setOnClickListener(this);
         ageRoot.setOnClickListener(this);
 
-        addPersonController = new AddPersonController(
-                new DataSource(
-                        new DBHelper(this)
-                ), this
-        );
-
         addPatientController = new AddPersonController();
     }
 
@@ -91,16 +87,17 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
 
 //            new db
             Patient patient = new Patient(personName, dateOfBirth, personState, filePath);
-            addPatientController.addPatient(patient);
-            Long insertedPatientId = addPersonController.getInsertedPatientId();
-
-
-//            old db
-            addPersonController.addPerson(personName, filePath, personState);
+            try {
+                this.id = addPatientController.addPatient(patient);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
 
             Intent i = new Intent(this, MainActivity.class);
-            i.putExtra(PERSON_ID, personId);
+            i.putExtra(PERSON_ID, id);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             startActivity(i);

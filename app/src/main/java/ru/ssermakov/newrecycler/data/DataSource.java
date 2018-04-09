@@ -21,35 +21,35 @@ public class DataSource implements DataSourceInterface {
         this.dbHelper = dbHelper;
     }
 
-
-    @Override
-    public List<Person> getListOfData() {
-        ArrayList<Person> listOfData = new ArrayList<>();
-        Person person;
-        Cursor cursor;
-        cursor = dbHelper.getReadableDatabase().query(
-                PatientsTable.TABLE_PATIENTS,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-
-        while (cursor.moveToNext()) {
-            person = new Person(
-                    cursor.getInt(cursor.getColumnIndex(PatientsTable.COLUMN_ID)),
-                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_NAME)),
-                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_IMAGE_URI)),
-                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_CURRENT_STATE))
-            );
-            listOfData.add(person);
-
-        }
-        cursor.close();
-        return listOfData;
-    }
+//
+//    @Override
+//    public List<Person> getListOfData() {
+//        ArrayList<Person> listOfData = new ArrayList<>();
+//        Person person;
+//        Cursor cursor;
+//        cursor = dbHelper.getReadableDatabase().query(
+//                PatientsTable.TABLE_PATIENTS,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null
+//        );
+//
+//        while (cursor.moveToNext()) {
+//            person = new Person(
+//                    cursor.getInt(cursor.getColumnIndex(PatientsTable.COLUMN_ID)),
+//                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_NAME)),
+//                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_IMAGE_URI)),
+//                    cursor.getString(cursor.getColumnIndex(PatientsTable.COLUMN_CURRENT_STATE))
+//            );
+//            listOfData.add(person);
+//
+//        }
+//        cursor.close();
+//        return listOfData;
+//    }
 
     @Override
     public void addPersonToDb(String personName, String filePath, String state) {
@@ -64,13 +64,13 @@ public class DataSource implements DataSourceInterface {
 
     }
 
-    @Override
-    public int getLastPersonId() {
-        List<Person> data = getListOfData();
-        int size = data.size();
-        Person last = data.get(size - 1);
-        return last.getId();
-    }
+//    @Override
+//    public int getLastPersonId() {
+//        List<Person> data = getListOfData();
+//        int size = data.size();
+//        Person last = data.get(size - 1);
+//        return last.getId();
+//    }
 
     @Override
     public void deletePerson(int id) {

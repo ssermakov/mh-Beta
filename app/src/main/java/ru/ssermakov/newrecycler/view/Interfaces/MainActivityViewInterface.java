@@ -1,11 +1,8 @@
 package ru.ssermakov.newrecycler.view.Interfaces;
 
-import android.net.Uri;
-
 import java.util.List;
 
-import ru.ssermakov.newrecycler.data.Person;
-import ru.ssermakov.newrecycler.data.room.Patient;
+import ru.ssermakov.newrecycler.data.room.entity.Patient;
 
 /**
  * Created by btb_wild on 19.02.2018.

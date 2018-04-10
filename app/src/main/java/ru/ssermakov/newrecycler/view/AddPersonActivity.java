@@ -37,9 +37,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
-import ru.ssermakov.newrecycler.data.DBHelper;
-import ru.ssermakov.newrecycler.data.DataSource;
-import ru.ssermakov.newrecycler.data.room.Patient;
+import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.AddPersonController;
 import ru.ssermakov.newrecycler.view.Interfaces.PersonActivityInterface;
 

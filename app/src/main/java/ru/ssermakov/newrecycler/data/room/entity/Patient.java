@@ -1,4 +1,4 @@
-package ru.ssermakov.newrecycler.data.room;
+package ru.ssermakov.newrecycler.data.room.entity;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

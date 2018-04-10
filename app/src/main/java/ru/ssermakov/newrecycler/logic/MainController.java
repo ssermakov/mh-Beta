@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutionException;
 import ru.ssermakov.newrecycler.app.App;
 import ru.ssermakov.newrecycler.data.DataSourceInterface;
 import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
-import ru.ssermakov.newrecycler.data.room.Patient;
-import ru.ssermakov.newrecycler.data.room.PatientDao;
+import ru.ssermakov.newrecycler.data.room.entity.Patient;
+import ru.ssermakov.newrecycler.data.room.dao.PatientDao;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 
 

@@ -3,13 +3,11 @@ package ru.ssermakov.newrecycler.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -30,10 +28,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
-import ru.ssermakov.newrecycler.data.DBHelper;
-import ru.ssermakov.newrecycler.data.DataSource;
 import ru.ssermakov.newrecycler.data.Person;
-import ru.ssermakov.newrecycler.data.room.Patient;
+import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 

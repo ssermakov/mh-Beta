@@ -2,8 +2,8 @@ package ru.ssermakov.newrecycler.data.room.repository;
 
 import java.util.List;
 
-import ru.ssermakov.newrecycler.data.room.Patient;
-import ru.ssermakov.newrecycler.data.room.PatientDao;
+import ru.ssermakov.newrecycler.data.room.entity.Patient;
+import ru.ssermakov.newrecycler.data.room.dao.PatientDao;
 
 public class PatientRepository {
     PatientDao patientDao;

@@ -21,4 +21,28 @@ public class Symptom {
         this.caseId = caseId;
         this.symptom = symptom;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getCaseId() {
+        return caseId;
+    }
+
+    public void setCaseId(Long caseId) {
+        this.caseId = caseId;
+    }
+
+    public String getSymptom() {
+        return symptom;
+    }
+
+    public void setSymptom(String symptom) {
+        this.symptom = symptom;
+    }
 }

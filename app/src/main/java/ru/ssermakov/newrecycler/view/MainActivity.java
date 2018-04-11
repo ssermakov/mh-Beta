@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
         mainController = new MainController(this);
 
-
         Intent i = getIntent();
         Long id = i.getLongExtra(AddPersonActivity.PERSON_ID, 0);
         recyclerView.smoothScrollToPosition(id.intValue());

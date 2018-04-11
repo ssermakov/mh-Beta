@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import ru.ssermakov.newrecycler.data.DBHelper;
 import ru.ssermakov.newrecycler.data.DataSource;
+import ru.ssermakov.newrecycler.data.room.entity.Case;
 import ru.ssermakov.newrecycler.logic.FragmentController;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.Interfaces.FragmentInterface;
@@ -24,6 +28,9 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     protected View view;
     protected FragmentController fragmentController;
     protected int id;
+    protected ArrayList<String> symptoms;
+    protected static TextView startDateTextView;
+    protected  TextView symptomsList;
 
     public String getTitle() {
         return title;
@@ -36,4 +43,6 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     public void testToast() {
         Toast.makeText(context, "Test Toast!", Toast.LENGTH_SHORT).show();
     }
+
+
 }

@@ -21,4 +21,28 @@ public class Plan {
         this.caseId = caseId;
         this.plan = plan;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getCaseId() {
+        return caseId;
+    }
+
+    public void setCaseId(Long caseId) {
+        this.caseId = caseId;
+    }
+
+    public String getPlan() {
+        return plan;
+    }
+
+    public void setPlan(String plan) {
+        this.plan = plan;
+    }
 }

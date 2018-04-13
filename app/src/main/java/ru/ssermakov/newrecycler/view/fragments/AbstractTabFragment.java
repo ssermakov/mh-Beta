@@ -2,8 +2,13 @@ package ru.ssermakov.newrecycler.view.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,9 +33,11 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     protected View view;
     protected FragmentController fragmentController;
     protected int id;
-    protected ArrayList<String> symptoms;
+    protected static ArrayList<String> symptoms, plans;
     protected static TextView startDateTextView;
-    protected  TextView symptomsList;
+    protected  TextView dateHint;
+    protected  TextView symptomsListTextView, plansListTextView;
+    protected static String dateFromDatePicker;
 
     public String getTitle() {
         return title;
@@ -44,5 +51,18 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
         Toast.makeText(context, "Test Toast!", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        plans = new ArrayList<>();
+        symptoms = new ArrayList<>();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
 }

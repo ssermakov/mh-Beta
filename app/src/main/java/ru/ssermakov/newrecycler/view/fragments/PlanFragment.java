@@ -12,33 +12,46 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.data.DBHelper;
 import ru.ssermakov.newrecycler.data.DataSource;
 import ru.ssermakov.newrecycler.logic.FragmentController;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.MainActivity;
+import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
+import studio.carbonylgroup.textfieldboxes.SimpleTextChangedWatcher;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 /**
  * Created by btb_wild on 13.03.2018.
  */
 
-public class PlanFragment extends AbstractTabFragment {
+public class PlanFragment extends AbstractTabFragment implements View.OnClickListener, SimpleTextChangedWatcher {
 
     Button button;
-    private TextView textView;
-    private TextFieldBoxes textFieldBoxes;
+
+    TextFieldBoxes textFieldBoxesPlans;
+    ExtendedEditText extendedEditTextPlans;
+    private String allText;
+
+
 
     public PlanFragment() {
-        fragmentController = new FragmentController(
+/*        fragmentController = new FragmentController(
                 new DataSource(
                         new DBHelper(getContext())
                 ),
                 this
-        );
+        );*/
         Intent i = BeginIllnessActivity.intent;
         id = i.getIntExtra(MainActivity.EXTRA_ID, -1);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -47,6 +60,16 @@ public class PlanFragment extends AbstractTabFragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_plan, container, false);
+
+        textFieldBoxesPlans = view.findViewById(R.id.text_field_boxes_plan);
+        extendedEditTextPlans = view.findViewById(R.id.extended_edit_text_plan);
+        plansListTextView = view.findViewById(R.id.plansListTextView);
+        button = view.findViewById(R.id.button);
+
+
+        textFieldBoxesPlans.setOnClickListener(this);
+        textFieldBoxesPlans.getEndIconImageButton().setOnClickListener(this);
+        textFieldBoxesPlans.setSimpleTextChangeWatcher(this);
         return view;
     }
 
@@ -54,23 +77,22 @@ public class PlanFragment extends AbstractTabFragment {
     public void onStart() {
         super.onStart();
 
-        textView = getActivity().findViewById(R.id.date_hint);
-        textFieldBoxes = getActivity().findViewById(R.id.text_field_boxes);
-        button = view.findViewById(R.id.button);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                fragmentController.onButtonSendClick();
                 Intent i = new Intent(getContext(), MainActivity.class);
-                String date = textView.getText().toString();
-                String hint = textFieldBoxes.getLabelText().toString();
-                i.putExtra("date", date);
-                i.putExtra("hint", hint);
+//                String date = textView.getText().toString();
+//                String hint = textFieldBoxes.getLabelText().toString();
+//                i.putExtra("date", date);
+//                i.putExtra("hint", hint);
                 startActivity(i);
             }
         });
     }
+
+
 
     public static Fragment getInstance(Context context) {
         Bundle args = new Bundle();
@@ -86,4 +108,41 @@ public class PlanFragment extends AbstractTabFragment {
         this.context = context;
     }
 
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+        if (viewId == R.id.text_field_boxes_plan) {
+            if (allText == null) {
+                allText = "1. ";
+                plansListTextView.setText(allText);
+            }
+        }
+
+        String s = extendedEditTextPlans.getText().toString().trim();
+        if (!s.equals("")) {
+            plans.add(s);
+            if (allText == null) {
+                allText = String.valueOf(plans.size()) + ". " + s + "\n" + String.valueOf(plans.size() + 1) + ". ";
+            } else {
+                allText += s + "\n" + String.valueOf(plans.size() + 1) + ". ";
+            }
+        }
+        extendedEditTextPlans.setText("");
+    }
+
+    @Override
+    public void onTextChanged(String s, boolean b) {
+        String temp = allText;
+        if (s.equals("")) {
+            if (allText != null) {
+                temp = temp.substring(0, temp.length() - 3);
+                plansListTextView.setText(temp);
+            }
+        }
+        if (allText == null) {
+            plansListTextView.setText(s);
+        } else {
+            plansListTextView.setText(temp + s);
+        }
+    }
 }

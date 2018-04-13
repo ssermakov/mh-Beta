@@ -1,6 +1,5 @@
 package ru.ssermakov.newrecycler.view.fragments;
 
-import android.arch.persistence.room.util.StringUtil;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -24,8 +22,8 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 public class SymptomsFragment extends AbstractTabFragment implements View.OnClickListener, SimpleTextChangedWatcher {
 
-    TextFieldBoxes textFieldBoxes;
-    ExtendedEditText extendedEditText;
+    TextFieldBoxes textFieldBoxesSymptoms;
+    ExtendedEditText extendedEditTextSymptoms;
     private String allText;
 
 
@@ -36,14 +34,14 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_symptoms, container, false);
 
-        textFieldBoxes = view.findViewById(R.id.text_field_boxes);
-        extendedEditText = view.findViewById(R.id.extended_edit_text);
-        symptomsList = view.findViewById(R.id.symptomsListTextView);
+        textFieldBoxesSymptoms = view.findViewById(R.id.text_field_boxes);
+        extendedEditTextSymptoms = view.findViewById(R.id.extended_edit_text);
+        symptomsListTextView = view.findViewById(R.id.symptomsListTextView);
 
-        symptoms = new ArrayList<>();
-        textFieldBoxes.setOnClickListener(this);
-        textFieldBoxes.getEndIconImageButton().setOnClickListener(this);
-        textFieldBoxes.setSimpleTextChangeWatcher(this);
+
+        textFieldBoxesSymptoms.setOnClickListener(this);
+        textFieldBoxesSymptoms.getEndIconImageButton().setOnClickListener(this);
+        textFieldBoxesSymptoms.setSimpleTextChangeWatcher(this);
         return view;
     }
 
@@ -66,11 +64,13 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
     public void onClick(View v) {
         int viewId = v.getId();
         if (viewId == R.id.text_field_boxes) {
-            allText = "1. ";
-            symptomsList.setText(allText);
+            if (allText == null) {
+                allText = "1. ";
+                symptomsListTextView.setText(allText);
+            }
         }
 
-        String s = extendedEditText.getText().toString().trim();
+        String s = extendedEditTextSymptoms.getText().toString().trim();
         if (!s.equals("")) {
             symptoms.add(s);
             if (allText == null) {
@@ -79,23 +79,23 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
                 allText += s + "\n" + String.valueOf(symptoms.size() + 1) + ". ";
             }
         }
-        extendedEditText.setText("");
+        extendedEditTextSymptoms.setText("");
     }
 
 
     @Override
     public void onTextChanged(String s, boolean b) {
-        String temp= allText;
+        String temp = allText;
         if (s.equals("")) {
             if (allText != null) {
                 temp = temp.substring(0, temp.length() - 3);
-                symptomsList.setText(temp);
+                symptomsListTextView.setText(temp);
             }
         }
         if (allText == null) {
-            symptomsList.setText(s);
+            symptomsListTextView.setText(s);
         } else {
-            symptomsList.setText(temp + s);
+            symptomsListTextView.setText(temp + s);
         }
     }
 }

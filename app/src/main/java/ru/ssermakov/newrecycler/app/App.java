@@ -19,7 +19,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        db = Room.databaseBuilder(this, MedicalHistoryDatabase.class, "mh")
+        db = Room.databaseBuilder(this, MedicalHistoryDatabase.class, "med")
                 .build();
     }
 

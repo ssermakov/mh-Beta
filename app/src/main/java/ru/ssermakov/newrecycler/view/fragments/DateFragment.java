@@ -1,6 +1,5 @@
 package ru.ssermakov.newrecycler.view.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -13,27 +12,27 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.TextView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import ru.ssermakov.newrecycler.R;
-import ru.ssermakov.newrecycler.view.AddPersonActivity;
-import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
+import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
+import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 /**
  * Created by btb_wild on 13.03.2018.
  */
 
-public class DateFragment extends AbstractTabFragment {
+public class DateFragment extends AbstractTabFragment implements View.OnClickListener {
 
 
-    private static final String KEY_START_DATA = "START_DATA";
+    private static final String KEY_START_DATE = "START_DATE";
+    TextFieldBoxes textFieldBoxesIllnessName;
+    ExtendedEditText extendedEditTextIllnessName;
 
 /*    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,32 +47,71 @@ public class DateFragment extends AbstractTabFragment {
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_date, container, false);
         startDateTextView = view.findViewById(R.id.start_date);
+        dateHint = view.findViewById(R.id.date_hint);
+
+        startDateTextView.setOnClickListener(this);
+        dateHint.setOnClickListener(this);
+
+        textFieldBoxesIllnessName = view.findViewById(R.id.text_field_boxes_illness_name);
+        extendedEditTextIllnessName = view.findViewById(R.id.extended_edit_text_illness_name);
+
         if (savedInstanceState != null) {
-            startDateTextView.setText(savedInstanceState.getString(KEY_START_DATA));
+            startDateTextView.setText(savedInstanceState.getString(KEY_START_DATE));
         }
+
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        startDateTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog();
-            }
+    }
 
-            private void showDatePickerDialog() {
-                DialogFragment fragment = new StartDatePickerFragment();
-                fragment.show(getFragmentManager(), "startDatePicker");
-            }
-        });
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+        if (viewId == R.id.start_date || viewId == R.id.date_hint) {
+            showDatePickerDialog();
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_START_DATA, startDateTextView.getText().toString());
+        outState.putString(KEY_START_DATE, startDateTextView.getText().toString());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (dateFromDatePicker != null) {
+            startDateTextView.setText(dateFromDatePicker);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     public static Fragment getInstance(Context context) {
@@ -88,6 +126,11 @@ public class DateFragment extends AbstractTabFragment {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    private void showDatePickerDialog() {
+        DialogFragment fragment = new StartDatePickerFragment();
+        fragment.show(getFragmentManager(), "startDatePicker");
     }
 
     public static class StartDatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -109,7 +152,8 @@ public class DateFragment extends AbstractTabFragment {
         @Override
         public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
             i1 = i1 + 1;
-           startDateTextView.setText(i2 + "/" + i1 + "/" + i);
+            dateFromDatePicker = i2 + "/" + i1 + "/" + i;
+            startDateTextView.setText(i2 + "/" + i1 + "/" + i);
         }
     }
 }

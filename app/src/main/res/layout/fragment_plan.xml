@@ -1,53 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayout2"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/flipper_schema"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/schema_hint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="назначения врача (сделайте фото или введите вручную в поле ниже)"
-            android:textAlignment="center" />
+    <TextView
+        android:id="@+id/plansListTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_field_boxes_plan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/take_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/schema_hint"
-            android:layout_marginEnd="53dp"
-            android:src="@drawable/ic_add_a_photo_black_24dp" />
+    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
+        android:id="@+id/text_field_boxes_plan"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:endIcon="@drawable/ic_input_black_24dp"
+        app:helperText="Вводите назначения врача по одному или сделайте фото назначения."
+        app:labelText="Схема лечения"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/schema"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignBottom="@+id/take_image"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="54dp"
-            android:hint="перечислите симтомы через запятую"
-            android:textAlignment="center"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/button"
+        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
+            android:id="@+id/extended_edit_text_plan"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="17dp"
-            android:layout_marginTop="15dp"
-            android:text="Button" />
+            android:layout_height="wrap_content" />
 
-    </RelativeLayout>
+    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.971"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_field_boxes_plan"
+        app:layout_constraintVertical_bias="0.028" />
+
+
+</android.support.constraint.ConstraintLayout>

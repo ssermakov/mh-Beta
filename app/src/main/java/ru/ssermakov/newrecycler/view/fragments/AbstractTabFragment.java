@@ -21,6 +21,7 @@ import ru.ssermakov.newrecycler.logic.FragmentController;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.Interfaces.FragmentInterface;
 import ru.ssermakov.newrecycler.view.MainActivity;
+import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 
 /**
  * Created by btb_wild on 13.03.2018.
@@ -38,6 +39,8 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     protected  TextView dateHint;
     protected  TextView symptomsListTextView, plansListTextView;
     protected static String dateFromDatePicker;
+
+    protected static ExtendedEditText extendedEditTextIllnessName;
 
     public String getTitle() {
         return title;

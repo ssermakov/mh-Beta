@@ -32,7 +32,7 @@ public class DateFragment extends AbstractTabFragment implements View.OnClickLis
 
     private static final String KEY_START_DATE = "START_DATE";
     TextFieldBoxes textFieldBoxesIllnessName;
-    ExtendedEditText extendedEditTextIllnessName;
+
 
 /*    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

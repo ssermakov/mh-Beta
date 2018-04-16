@@ -13,10 +13,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
+import ru.ssermakov.newrecycler.app.App;
 import ru.ssermakov.newrecycler.data.DBHelper;
 import ru.ssermakov.newrecycler.data.DataSource;
+import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
+import ru.ssermakov.newrecycler.data.room.dao.IllnessDao;
+import ru.ssermakov.newrecycler.data.room.entity.Illness;
 import ru.ssermakov.newrecycler.logic.FragmentController;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.MainActivity;
@@ -38,13 +43,9 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
 
 
+
     public PlanFragment() {
-/*        fragmentController = new FragmentController(
-                new DataSource(
-                        new DBHelper(getContext())
-                ),
-                this
-        );*/
+        fragmentController = new FragmentController(this);
         Intent i = BeginIllnessActivity.intent;
         id = i.getIntExtra(MainActivity.EXTRA_ID, -1);
     }
@@ -81,32 +82,20 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                fragmentController.onButtonSendClick();
+                try {
+                    fragmentController.sendIllnessToDb(extendedEditTextIllnessName.getText().toString().trim().toLowerCase());
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 Intent i = new Intent(getContext(), MainActivity.class);
-//                String date = textView.getText().toString();
-//                String hint = textFieldBoxes.getLabelText().toString();
-//                i.putExtra("date", date);
-//                i.putExtra("hint", hint);
                 startActivity(i);
             }
         });
     }
 
-
-
-    public static Fragment getInstance(Context context) {
-        Bundle args = new Bundle();
-        PlanFragment fragment = new PlanFragment();
-        fragment.setArguments(args);
-        fragment.setContext(context);
-        fragment.setTitle(context.getString(R.string.tab_item_plan));
-
-        return fragment;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
 
     @Override
     public void onClick(View v) {
@@ -145,4 +134,19 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
             plansListTextView.setText(temp + s);
         }
     }
+
+    public static Fragment getInstance(Context context) {
+        Bundle args = new Bundle();
+        PlanFragment fragment = new PlanFragment();
+        fragment.setArguments(args);
+        fragment.setContext(context);
+        fragment.setTitle(context.getString(R.string.tab_item_plan));
+
+        return fragment;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
 }

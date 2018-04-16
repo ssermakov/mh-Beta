@@ -20,6 +20,9 @@ public interface IllnessDao {
     @Query("SELECT * FROM illnesses WHERE id = :id")
     Illness getById(long id);
 
+    @Query("SELECT * FROM illnesses WHERE name = :illnessName")
+    List<Illness> getAllByIllness(String illnessName);
+
     @Insert
     Long insert(Illness illness);
 

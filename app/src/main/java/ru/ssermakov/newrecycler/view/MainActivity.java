@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             showToast("Add Person");
         }
         if (item.getItemId() == R.id.fm_search_person) {
+
             showToast("Search");
         }
         return super.onOptionsItemSelected(item);

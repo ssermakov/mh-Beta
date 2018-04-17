@@ -12,7 +12,7 @@ import ru.ssermakov.newrecycler.logic.adapters.TabsPagerFragmentAdapter;
 public class BeginIllnessActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
-    private ViewPager viewPager;
+    public static ViewPager viewPager;
     public static Intent intent;
 
     @Override
@@ -30,9 +30,9 @@ public class BeginIllnessActivity extends AppCompatActivity {
         TabsPagerFragmentAdapter adapter = new TabsPagerFragmentAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
+
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
     }
-
 
 }

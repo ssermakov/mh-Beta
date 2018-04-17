@@ -6,22 +6,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
-import ru.ssermakov.newrecycler.app.App;
-import ru.ssermakov.newrecycler.data.DBHelper;
-import ru.ssermakov.newrecycler.data.DataSource;
-import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
-import ru.ssermakov.newrecycler.data.room.dao.IllnessDao;
-import ru.ssermakov.newrecycler.data.room.entity.Illness;
 import ru.ssermakov.newrecycler.logic.FragmentController;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.MainActivity;
@@ -40,8 +33,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
     TextFieldBoxes textFieldBoxesPlans;
     ExtendedEditText extendedEditTextPlans;
     private String allText;
-
-
+    private Long caseId;
 
 
     public PlanFragment() {
@@ -82,16 +74,40 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    fragmentController.sendIllnessToDb(extendedEditTextIllnessName.getText().toString().trim().toLowerCase());
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (symptoms.size() == 0) {
+                    BeginIllnessActivity.viewPager.setCurrentItem(1, true);
+                } else {
+
+                    String illnessName = extendedEditTextIllnessName.getText().toString().trim().toLowerCase();
+
+                    try {
+                        fragmentController.createIllness(illnessName);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        caseId = fragmentController.createCase(
+                                id,
+                                fragmentController.getIllnessIdFromDb(illnessName),
+                                startDateTextView.getText().toString()
+                        );
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    fragmentController.createSymptoms(id, caseId, symptoms);
+                    fragmentController.createPlans(caseId, plans);
+
+                    Intent i = new Intent(getContext(), MainActivity.class);
+                    startActivity(i);
                 }
 
-                Intent i = new Intent(getContext(), MainActivity.class);
-                startActivity(i);
             }
         });
     }
@@ -129,6 +145,8 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
             }
         }
         if (allText == null) {
+//            s = "<font color=#cc0029>" + s + "</font>";
+//            plansListTextView.setText(Html.fromHtml(s, Html.FROM_HTML_MODE_LEGACY));
             plansListTextView.setText(s);
         } else {
             plansListTextView.setText(temp + s);

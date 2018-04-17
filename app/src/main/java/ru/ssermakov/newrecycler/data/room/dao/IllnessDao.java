@@ -23,6 +23,9 @@ public interface IllnessDao {
     @Query("SELECT * FROM illnesses WHERE name = :illnessName")
     List<Illness> getAllByIllness(String illnessName);
 
+    @Query("SELECT id FROM illnesses WHERE name = :illnessName")
+    int getIllnessId(String illnessName);
+
     @Insert
     Long insert(Illness illness);
 

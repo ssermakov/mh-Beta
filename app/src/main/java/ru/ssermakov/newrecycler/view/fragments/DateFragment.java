@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import ru.ssermakov.newrecycler.R;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
@@ -48,6 +49,8 @@ public class DateFragment extends AbstractTabFragment implements View.OnClickLis
         view = inflater.inflate(R.layout.fragment_date, container, false);
         startDateTextView = view.findViewById(R.id.start_date);
         dateHint = view.findViewById(R.id.date_hint);
+        //set default date
+        startDateTextView.setText(setDefaultDate());
 
         startDateTextView.setOnClickListener(this);
         dateHint.setOnClickListener(this);
@@ -155,5 +158,13 @@ public class DateFragment extends AbstractTabFragment implements View.OnClickLis
             dateFromDatePicker = i2 + "/" + i1 + "/" + i;
             startDateTextView.setText(i2 + "/" + i1 + "/" + i);
         }
+
+    }
+    private String setDefaultDate() {
+        final Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        return day + "/" + month + "/" + year;
     }
 }

@@ -23,15 +23,16 @@ public class Case {
     Long patientId;
     Long illnessId;
     Date startDate;
-    Date endDate = null;
+    Date endDate;
 
     public Case() {
     }
 
-    public Case(Long patientId, Long illnessId, Date startDate) {
+    public Case(Long patientId, Long illnessId, Date startDate, Date endDate) {
         this.patientId = patientId;
         this.illnessId = illnessId;
         this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Long getId() {

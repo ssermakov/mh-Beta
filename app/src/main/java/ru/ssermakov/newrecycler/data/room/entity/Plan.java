@@ -6,7 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "plans",
         foreignKeys = {
-                @ForeignKey(entity = Plan.class,
+                @ForeignKey(entity = Case.class,
                         parentColumns = "id",
                         childColumns = "caseId",
                         onDelete = ForeignKey.CASCADE)})

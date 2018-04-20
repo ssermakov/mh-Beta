@@ -1,6 +1,9 @@
 package ru.ssermakov.newrecycler.logic;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -10,14 +13,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.app.App;
 import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
 import ru.ssermakov.newrecycler.data.room.dao.CaseDao;
 import ru.ssermakov.newrecycler.data.room.dao.IllnessDao;
+import ru.ssermakov.newrecycler.data.room.dao.PatientDao;
 import ru.ssermakov.newrecycler.data.room.dao.PlanDao;
 import ru.ssermakov.newrecycler.data.room.dao.SymptomDao;
 import ru.ssermakov.newrecycler.data.room.entity.Case;
 import ru.ssermakov.newrecycler.data.room.entity.Illness;
+import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.data.room.entity.Plan;
 import ru.ssermakov.newrecycler.data.room.entity.Symptom;
 import ru.ssermakov.newrecycler.view.fragments.AbstractTabFragment;
@@ -26,7 +32,7 @@ import ru.ssermakov.newrecycler.view.fragments.AbstractTabFragment;
  * Created by btb_wild on 15.03.2018.
  */
 
-public class FragmentController {
+public class FragmentController extends AppCompatActivity {
 
     private MedicalHistoryDatabase db;
     private AbstractTabFragment abstractTabFragment;
@@ -34,14 +40,17 @@ public class FragmentController {
     private CaseDao caseDao;
     private SymptomDao symptomDao;
     private PlanDao planDao;
+    private PatientDao patientDao;
 
     public FragmentController(AbstractTabFragment abstractTabFragment) {
         illnessDao = App.getInstance().getDb().illnessDao();
         caseDao = App.getInstance().getDb().caseDao();
         symptomDao = App.getInstance().getDb().symptomDao();
         planDao = App.getInstance().getDb().planDao();
+        patientDao = App.getInstance().getDb().patientDao();
         this.abstractTabFragment = abstractTabFragment;
     }
+
 
     public void createIllness(String s) throws ExecutionException, InterruptedException {
         if (s.equals("")) {
@@ -57,6 +66,9 @@ public class FragmentController {
     }
 
     public int getIllnessIdFromDb(String illnessName) throws ExecutionException, InterruptedException {
+        if (illnessName.equals("")) {
+            illnessName = "illness_not_entered";
+        }
         getIllnessIdFromDbTask task = new getIllnessIdFromDbTask();
         task.execute(illnessName);
         return task.get();
@@ -74,9 +86,9 @@ public class FragmentController {
         return task.get();
     }
 
-    public void createSymptoms(int id, Long caseId, ArrayList<String> symptoms) {
+    public void createSymptoms(Long caseId, ArrayList<String> symptoms) {
         for (String symptomString : symptoms) {
-            Symptom symptom = new Symptom((long)id, caseId, symptomString.toLowerCase().trim());
+            Symptom symptom = new Symptom(caseId, symptomString.toLowerCase().trim());
             CreateSymptomTask task = new CreateSymptomTask();
             task.execute(symptom);
 
@@ -84,17 +96,25 @@ public class FragmentController {
     }
 
     public void createPlans(Long caseId, ArrayList<String> plans) {
-        CreatePlanTask task = new CreatePlanTask();
         if (plans.size() == 0) {
             Plan plan = new Plan(caseId, null);
+            CreatePlanTask task = new CreatePlanTask();
             task.execute(plan);
         } else {
             for (String planString : plans) {
                 Plan plan = new Plan(caseId, planString.toLowerCase().trim());
+                CreatePlanTask task = new CreatePlanTask();
                 task.execute(plan);
             }
         }
     }
+
+    public void togglePatientState(int id) {
+        TogglePatientStateTask task = new TogglePatientStateTask();
+        task.execute(id);
+    }
+
+
 
     private class CreateCaseTask extends AsyncTask<Case, Void, Long> {
 
@@ -152,6 +172,16 @@ public class FragmentController {
         @Override
         protected Void doInBackground(Plan... plans) {
             planDao.insert(plans[0]);
+            return null;
+        }
+    }
+
+    private class TogglePatientStateTask extends AsyncTask<Integer, Void, Void> {
+        @Override
+        protected Void doInBackground(Integer... integers) {
+           Patient patient = patientDao.getById(integers[0]);
+           patient.setState("болеет");
+           patientDao.update(patient);
             return null;
         }
     }

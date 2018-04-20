@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.logic.FragmentController;
+import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.MainActivity;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
@@ -28,18 +28,21 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 public class PlanFragment extends AbstractTabFragment implements View.OnClickListener, SimpleTextChangedWatcher {
 
+
     Button button;
 
     TextFieldBoxes textFieldBoxesPlans;
     ExtendedEditText extendedEditTextPlans;
     private String allText;
     private Long caseId;
+    public static final String KEY_POSITION = "POSITION";
 
 
     public PlanFragment() {
         fragmentController = new FragmentController(this);
         Intent i = BeginIllnessActivity.intent;
-        id = i.getIntExtra(MainActivity.EXTRA_ID, -1);
+        id = i.getIntExtra(MainController.EXTRA_ID, -1);
+        position = i.getIntExtra(MainController.EXTRA_POSITION, -1);
     }
 
     @Override
@@ -100,11 +103,15 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
                         e.printStackTrace();
                     }
 
+                    fragmentController.togglePatientState(id);
 
-                    fragmentController.createSymptoms(id, caseId, symptoms);
+
+                    fragmentController.createSymptoms(caseId, symptoms);
                     fragmentController.createPlans(caseId, plans);
 
                     Intent i = new Intent(getContext(), MainActivity.class);
+                    i.putExtra(KEY_POSITION, position);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
                 }
 
@@ -145,8 +152,6 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
             }
         }
         if (allText == null) {
-//            s = "<font color=#cc0029>" + s + "</font>";
-//            plansListTextView.setText(Html.fromHtml(s, Html.FROM_HTML_MODE_LEGACY));
             plansListTextView.setText(s);
         } else {
             plansListTextView.setText(temp + s);

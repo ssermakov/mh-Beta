@@ -1,15 +1,21 @@
 package ru.ssermakov.newrecycler.logic;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.app.App;
 import ru.ssermakov.newrecycler.data.DataSourceInterface;
 import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
-import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.data.room.dao.PatientDao;
+import ru.ssermakov.newrecycler.data.room.entity.Patient;
+import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
+import ru.ssermakov.newrecycler.view.EndIllnessActivity;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 
 
@@ -17,16 +23,14 @@ import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
  * Created by btb_wild on 19.02.2018.
  */
 
-public class MainController {
+public class MainController extends AppCompatActivity {
 
     private MainActivityViewInterface mainActivityView;
-    private DataSourceInterface dataSource;
 
     private PatientDao patientDao;
 
-    public MainController(MainActivityViewInterface view/*, DataSourceInterface dataSource*/) {
+    public MainController(MainActivityViewInterface view) {
         this.mainActivityView = view;
-//        this.dataSource = dataSource;
         MedicalHistoryDatabase db = App.getInstance().getDb();
         this.patientDao = db.patientDao();
 
@@ -35,12 +39,10 @@ public class MainController {
 
 
     private void getListFromDataSource() {
-//        mainActivityView.setUpAdapterAndView(dataSource.getListOfData());
         GetListFromDataSourceTask task = new GetListFromDataSourceTask();
         task.execute();
         try {
-           List<Patient> patients =task.get();
-           mainActivityView.setUpAdapterAndView(task.get());
+            mainActivityView.setUpAdapterAndView(task.get());
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -49,12 +51,7 @@ public class MainController {
 
     }
 
-    //    public void onPersonNameClick(Person person) {
-//        mainActivityView.startPersonDetailActivity(
-//                person.getName(),
-//                person.getImage()
-//        );
-//    }
+
     public void onPersonNameClick(Patient patient) {
         mainActivityView.startPersonDetailActivity(
                 patient.getName(),
@@ -66,13 +63,30 @@ public class MainController {
         mainActivityView.startAddPersonActivity();
     }
 
-    public void onPersonSwipedToChangeState(int position, Patient patient) throws ExecutionException, InterruptedException {
-        patient = toggleState(patient);
-        TogglePatientStateTask task = new TogglePatientStateTask();
-        task.execute(patient);
-        if (task.get()) {
-            mainActivityView.toggleState(position, patient.getId());
+    public void onPersonSwipedToChangeState(int position, Patient patient, Context baseContext) {
+        if (patient.getState().equals("не болеет")) {
+            startBeginIllnessActivity(patient.getId(), position, baseContext);
+        } else {
+            startEndIllnessActivity(patient.getId(), position, baseContext);
         }
+    }
+
+    public static final String EXTRA_ID = "ID";
+    public static final String EXTRA_POSITION = "POSITION";
+
+    private void startBeginIllnessActivity(int id, int position, Context context) {
+        Intent i = new Intent(context, BeginIllnessActivity.class);
+        i.putExtra(EXTRA_POSITION, position);
+        i.putExtra(EXTRA_ID, id);
+        context.startActivity(i);
+    }
+
+    private void startEndIllnessActivity(int id, int position, Context context) {
+        Intent i = new Intent(context, EndIllnessActivity.class);
+        i.putExtra(EXTRA_ID, id);
+        i.putExtra(EXTRA_POSITION, position);
+        context.startActivity(i);
+
     }
 
     public void onPersonSwipedToDelete(int position, Patient patient) {
@@ -80,12 +94,6 @@ public class MainController {
         mainActivityView.deletePersonAt(position);
     }
 
-    private Patient toggleState(Patient patient) {
-        if (patient.getState().equalsIgnoreCase("не болеет")) {
-            patient.setState("болеет");
-        } else patient.setState("не болеет");
-        return patient;
-    }
 
     private class GetListFromDataSourceTask extends AsyncTask<Void, Void, List<Patient>> {
 
@@ -100,20 +108,13 @@ public class MainController {
             super.onPostExecute(patients);
         }
     }
+
     private class DeletePatientTask extends AsyncTask<Patient, Void, Void> {
 
         @Override
         protected Void doInBackground(Patient... patients) {
             patientDao.delete(patients[0]);
             return null;
-        }
-    }
-    private class TogglePatientStateTask extends AsyncTask<Patient, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Patient... patients) {
-            patientDao.update(patients[0]);
-            return true;
         }
     }
 }

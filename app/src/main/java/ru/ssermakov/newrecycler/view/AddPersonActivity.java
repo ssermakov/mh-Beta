@@ -41,7 +41,8 @@ import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.AddPersonController;
 import ru.ssermakov.newrecycler.view.Interfaces.PersonActivityInterface;
 
-public class AddPersonActivity extends AppCompatActivity implements PersonActivityInterface, View.OnClickListener {
+public class AddPersonActivity extends AppCompatActivity
+                               implements PersonActivityInterface, View.OnClickListener {
 
 
     private static final int GALLERY_REQUEST = 1;
@@ -73,7 +74,6 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
 
         addPatientController = new AddPersonController();
     }
-
 
     @Override
     public void onClick(View view) {
@@ -117,11 +117,6 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
 
     }
 
-    private void showDatePickDialog() {
-        DialogFragment fragment = new DatePickerFragment();
-        fragment.show(getSupportFragmentManager(), "datePicker");
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -145,6 +140,11 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
     @Override
     public void setPersonId(int lastPersonId) {
         personId = lastPersonId;
+    }
+
+    private void showDatePickDialog() {
+        DialogFragment fragment = new DatePickerFragment();
+        fragment.show(getSupportFragmentManager(), "datePicker");
     }
 
     public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -173,6 +173,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
 
 
     }
+
     private String getFileName(Uri selectedImage) {
         String fileName = null;
         if (selectedImage.getScheme().equals("content")) {
@@ -201,6 +202,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
         }
         return fileName;
     }
+
     private void copyFile(File fileSource, File fileDst) {
         try {
             InputStream is = new FileInputStream(fileSource);
@@ -216,6 +218,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
             e.printStackTrace();
         }
     }
+
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
@@ -230,6 +233,7 @@ public class AddPersonActivity extends AppCompatActivity implements PersonActivi
             }
         }
     }
+
     private Date convertStringToDate(String string) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;

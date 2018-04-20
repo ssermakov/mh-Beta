@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,10 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
-import ru.ssermakov.newrecycler.data.Person;
 import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
@@ -36,13 +33,11 @@ import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 public class MainActivity extends AppCompatActivity implements MainActivityViewInterface {
 
     private static final String EXTRA_NAME = "EXTRA_NAME";
-    private static final String EXTRA_BACKGROUNDCOLOR = "EXTRA_BACKGROUNDCOLOR";
     private static final String EXTRA_IMAGE = "EXTRA_IMAGE";
     private static final int REQUEST_ID = 100;
     private static final int MY_PERMISSIONS_REQUEST_READ_MEDIA = 23;
     public static final String EXTRA_ID = "ID";
-
-//    private List<Person> listOfData;
+    public static final String EXTRA_POSITION = "POSITION";
     private List<Patient> listOfData;
 
     private LayoutInflater layoutInflater;
@@ -50,15 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     private CustomAdapter adapter;
 
     private MainController mainController;
-
-
-    private Bitmap selectedImage = null;
-    int currentId;
-    private int currentPosition;
-    private Uri imageUri;
-    private Person currentPerson;
-    private ImageView currentImageView;
-
+    private Long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         mainController = new MainController(this);
 
         Intent i = getIntent();
-        Long id = i.getLongExtra(AddPersonActivity.PERSON_ID, 0);
+        id = i.getLongExtra(AddPersonActivity.PERSON_ID, 0);
         recyclerView.smoothScrollToPosition(id.intValue());
 
         // requesting permissions
@@ -85,13 +72,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         }
     }
 
-
     @Override
     public void startPersonDetailActivity(String name, String image) {
         Intent i = new Intent(this, PersonDetailActivity.class);
         i.putExtra(EXTRA_NAME, name);
         i.putExtra(EXTRA_IMAGE, image.toString());
-
         startActivity(i);
     }
 
@@ -120,19 +105,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 if (direction == 4) {
-                    try {
+
                         mainController.onPersonSwipedToChangeState(
                                 position,
-                                listOfData.get(position));
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                                listOfData.get(position),
+                                getBaseContext());
+
                 } else {
                     mainController.onPersonSwipedToDelete(
                             position,
                             listOfData.get(position));
+
                 }
             }
 
@@ -165,14 +148,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     }
 
     @Override
-    public void toggleState(int position, int id) {
-        if (listOfData.get(position).getState().equals("болеет")) {
-            startBeginIllnessActivity(id);
-        }
-        adapter.notifyItemChanged(position);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.first_menu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -192,18 +167,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         return super.onOptionsItemSelected(item);
     }
 
-    private void startBeginIllnessActivity(int id) {
-        Intent i = new Intent(this, BeginIllnessActivity.class);
-        i.putExtra(EXTRA_ID, id);
-        startActivity(i);
-    }
-
-
     void showToast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 
     private class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
+
 
         @Override
         public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -213,16 +182,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
         @Override
         public void onBindViewHolder(final CustomViewHolder holder, final int position) {
-//            Person person = listOfData.get(position);
             Patient patient = listOfData.get(position);
 
             holder.name.setText(
                     patient.getName()
             );
 
-            if (patient.getState().equals("не болеет")) {
+            if (patient.getState().equals(getResources().getString(R.string.good_state))) {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.colorGood));
-                holder.illTextView.setText("Не болеет");
+                holder.illTextView.setText(getResources().getString(R.string.good_state));
                 holder.schema.setText(getResources().getText(R.string.bless_you));
             } else {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.colorBad));
@@ -235,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             View.OnClickListener oclConteiner = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Person person = listOfData.get(position);
                     Patient patient = listOfData.get(position);
                     mainController.onPersonNameClick(patient);
                 }
@@ -250,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         }
 
         class CustomViewHolder extends RecyclerView.ViewHolder {
+
 
             private ImageView image;
             private TextView name;
@@ -271,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             }
 
         }
-    }
 
+    }
 
 }

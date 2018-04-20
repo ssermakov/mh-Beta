@@ -19,7 +19,7 @@ public interface MainActivityViewInterface {
 
     void deletePersonAt(int position);
 
-    void toggleState(int position, int id);
+//    void toggleStateAndStartActivity(int position, int id);
 
 //    void takePhotoFromGallery (Person person, int position);
 }

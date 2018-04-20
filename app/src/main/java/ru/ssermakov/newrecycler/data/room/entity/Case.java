@@ -19,11 +19,11 @@ import java.util.Date;
 public class Case {
 
     @PrimaryKey(autoGenerate = true)
-    Long id;
-    Long patientId;
-    Long illnessId;
-    Date startDate;
-    Date endDate;
+    private Long id;
+    private Long patientId;
+    private Long illnessId;
+    private Date startDate;
+    private Date endDate;
 
     public Case() {
     }

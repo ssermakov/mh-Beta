@@ -34,6 +34,7 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     protected View view;
     protected FragmentController fragmentController;
     protected int id;
+    protected int position;
     protected static ArrayList<String> symptoms, plans;
     protected static TextView startDateTextView;
     protected  TextView dateHint;

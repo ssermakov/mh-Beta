@@ -195,7 +195,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                 holder.schema.setText(getResources().getText(R.string.bless_you));
             } else {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.colorBad));
-                holder.schema.setText(getResources().getText(R.string.no_schema));
+
+                holder.schema.setText(mainController.setSchemaString(patient, MainActivity.this));
+
                 try {
                     holder.illTextView.setText(mainController.createResultString(
                             mainController.getDurationOfIllness(patient)

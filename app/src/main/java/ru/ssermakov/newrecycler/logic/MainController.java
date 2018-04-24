@@ -1,5 +1,6 @@
 package ru.ssermakov.newrecycler.logic;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,6 +24,7 @@ import ru.ssermakov.newrecycler.data.room.entity.Symptom;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.EndIllnessActivity;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
+import ru.ssermakov.newrecycler.view.MainActivity;
 
 
 /**
@@ -111,17 +113,36 @@ public class MainController extends AppCompatActivity {
     }
 
     public String createResultString(int durationOfIllness) {
+        durationOfIllness += 1;
         DateFormat format = new SimpleDateFormat("dd.MM");
         Date date = new Date(startDate);
-        if (durationOfIllness > 1) {
+        if (durationOfIllness > 2) {
             return "Болеет " + durationOfIllness + "-й день, с " + format.format(date);
         }
-        if (durationOfIllness == 1) {
+        if (durationOfIllness == 2) {
             return "Заболел вчера.";
         }
         return "Заболел сегодня.";
     }
 
+    public String setSchemaString(Patient patient, MainActivity mainActivity) {
+        try {
+            if (hasSchema(patient)) {
+               return mainActivity.getResources().getText(R.string.has_schema).toString();
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return mainActivity.getResources().getText(R.string.no_schema).toString();
+    }
+
+    public Boolean hasSchema(Patient patient) throws ExecutionException, InterruptedException {
+        HasSchemaTask task = new HasSchemaTask();
+        task.execute(patient.getId());
+        return task.get();
+    }
 
     private class GetListFromDataSourceTask extends AsyncTask<Void, Void, List<Patient>> {
 
@@ -159,6 +180,22 @@ public class MainController extends AppCompatActivity {
         @Override
         protected void onPostExecute(Long duration) {
             super.onPostExecute(duration);
+        }
+    }
+
+    private class HasSchemaTask extends AsyncTask<Integer, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            Integer integer = caseDao.isSchema(integers[0]);
+            if (caseDao.isSchema(integers[0]) == 0) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
         }
     }
 }

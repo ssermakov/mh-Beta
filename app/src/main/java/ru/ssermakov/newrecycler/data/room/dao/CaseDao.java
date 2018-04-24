@@ -36,4 +36,12 @@ public interface CaseDao {
 
     @Query("SELECT startDate FROM cases WHERE patientId = :patientId AND endDate IS NULL")
     Long getTimestampByPatientId(Integer patientId);
+
+    @Query("select count(*) " +
+            "from plans " +
+            "inner join cases on caseId = cases.id " +
+            "inner join patients on cases.patientId = patients.id " +
+            "inner join illnesses on cases.illnessId = illnesses.id " +
+            "where patients.id = :patientId and cases.endDate is null and `plan` is not null;")
+    Integer isSchema(Integer patientId);
 }

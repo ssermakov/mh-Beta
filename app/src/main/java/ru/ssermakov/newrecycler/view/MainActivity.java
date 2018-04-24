@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.data.room.entity.Patient;
@@ -195,6 +196,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             } else {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.colorBad));
                 holder.schema.setText(getResources().getText(R.string.no_schema));
+                try {
+                    holder.illTextView.setText(mainController.createResultString(
+                            mainController.getDurationOfIllness(patient)
+                    ));
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             Bitmap bm = BitmapFactory.decodeFile(patient.getImage());

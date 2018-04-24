@@ -56,7 +56,6 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
                 android:layout_toEndOf="@id/img"
-                android:text="Болеет 3 дня с 12.01.17"
                 android:textAlignment="textStart"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textSize="16sp" />
@@ -69,7 +68,7 @@
                 android:layout_below="@+id/textViewStatus"
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="20dp"
-                android:text="Лечение не назначено"
+                android:text="@string/noCure"
                 android:textSize="16sp" />
 
             <android.support.design.widget.FloatingActionButton

@@ -1,8 +1,6 @@
 package ru.ssermakov.newrecycler.logic;
 
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import java.text.DateFormat;
@@ -13,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.app.App;
 import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
 import ru.ssermakov.newrecycler.data.room.dao.CaseDao;
@@ -115,7 +112,6 @@ public class FragmentController extends AppCompatActivity {
     }
 
 
-
     private class CreateCaseTask extends AsyncTask<Case, Void, Long> {
 
         @Override
@@ -179,9 +175,9 @@ public class FragmentController extends AppCompatActivity {
     private class TogglePatientStateTask extends AsyncTask<Integer, Void, Void> {
         @Override
         protected Void doInBackground(Integer... integers) {
-           Patient patient = patientDao.getById(integers[0]);
-           patient.setState("болеет");
-           patientDao.update(patient);
+            Patient patient = patientDao.getById(integers[0]);
+            patient.setState("болеет");
+            patientDao.update(patient);
             return null;
         }
     }

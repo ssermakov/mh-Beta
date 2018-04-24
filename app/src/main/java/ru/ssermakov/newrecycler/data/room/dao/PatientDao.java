@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import java.util.Date;
 import java.util.List;
 
 import ru.ssermakov.newrecycler.data.room.entity.Patient;

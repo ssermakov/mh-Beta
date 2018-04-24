@@ -6,19 +6,21 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import java.util.Date;
 import java.util.List;
 
 import ru.ssermakov.newrecycler.data.room.entity.Case;
 import ru.ssermakov.newrecycler.data.room.entity.Illness;
+import ru.ssermakov.newrecycler.data.room.entity.Patient;
 
 @Dao
 public interface CaseDao {
 
     @Query("SELECT * FROM cases")
-    List<Illness> getAll();
+    List<Case> getAll();
 
     @Query("SELECT * FROM cases WHERE id = :id")
-    Illness getById(long id);
+    Case getById(long id);
 
     @Insert
     Long insert(Case fact);
@@ -29,4 +31,9 @@ public interface CaseDao {
     @Delete
     void delete(Case fact);
 
+    @Query("SELECT id FROM cases WHERE patientId = :patientId AND endDate IS NULL")
+    List<Integer> selectOpenCaseId(Integer patientId);
+
+    @Query("SELECT startDate FROM cases WHERE patientId = :patientId AND endDate IS NULL")
+    Long getTimestampByPatientId(Integer patientId);
 }

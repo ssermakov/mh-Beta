@@ -33,8 +33,6 @@ import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
 
 public class MainActivity extends AppCompatActivity implements MainActivityViewInterface {
 
-    private static final String EXTRA_NAME = "EXTRA_NAME";
-    private static final String EXTRA_IMAGE = "EXTRA_IMAGE";
     private static final int REQUEST_ID = 100;
     private static final int MY_PERMISSIONS_REQUEST_READ_MEDIA = 23;
     public static final String EXTRA_ID = "ID";
@@ -74,10 +72,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     }
 
     @Override
-    public void startPersonDetailActivity(String name, String image) {
+    public void startPersonDetailActivity(int id) {
         Intent i = new Intent(this, PersonDetailActivity.class);
-        i.putExtra(EXTRA_NAME, name);
-        i.putExtra(EXTRA_IMAGE, image.toString());
+        i.putExtra(EXTRA_ID, id);
         startActivity(i);
     }
 
@@ -189,6 +186,18 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                     patient.getName()
             );
 
+            try {
+                holder.textViewAge.setText(
+                        mainController.formatAge(
+                                mainController.getAge(patient)
+                        )
+                );
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             if (patient.getState().equals(getResources().getString(R.string.good_state))) {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.colorGood));
                 holder.illTextView.setText(getResources().getString(R.string.good_state));
@@ -209,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                 }
             }
 
-            Bitmap bm = BitmapFactory.decodeFile(patient.getImage());
+            Bitmap bm = BitmapFactory.decodeFile(patient.getImageUrl());
             holder.image.setImageBitmap(bm);
 
             View.OnClickListener oclConteiner = new View.OnClickListener() {
@@ -237,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             private CardView cardView;
             private TextView illTextView;
             private TextView schema;
+            private TextView textViewAge;
 
             public CustomViewHolder(View itemView) {
                 super(itemView);
@@ -247,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                 this.cardView = itemView.findViewById(R.id.card_view);
                 this.illTextView = itemView.findViewById(R.id.textViewStatus);
                 this.schema = itemView.findViewById(R.id.has_cure);
+                this.textViewAge = itemView.findViewById(R.id.textViewAge);
 
             }
 

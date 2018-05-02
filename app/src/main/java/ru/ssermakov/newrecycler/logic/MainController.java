@@ -1,6 +1,5 @@
 package ru.ssermakov.newrecycler.logic;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,12 +14,10 @@ import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.app.App;
-import ru.ssermakov.newrecycler.data.DataSourceInterface;
 import ru.ssermakov.newrecycler.data.room.MedicalHistoryDatabase;
 import ru.ssermakov.newrecycler.data.room.dao.CaseDao;
 import ru.ssermakov.newrecycler.data.room.dao.PatientDao;
 import ru.ssermakov.newrecycler.data.room.entity.Patient;
-import ru.ssermakov.newrecycler.data.room.entity.Symptom;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.EndIllnessActivity;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
@@ -48,25 +45,9 @@ public class MainController extends AppCompatActivity {
         getListFromDataSource();
     }
 
-
-    private void getListFromDataSource() {
-        GetListFromDataSourceTask task = new GetListFromDataSourceTask();
-        task.execute();
-        try {
-            mainActivityView.setUpAdapterAndView(task.get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
     public void onPersonNameClick(Patient patient) {
         mainActivityView.startPersonDetailActivity(
-                patient.getName(),
-                patient.getImage()
+                patient.getId()
         );
     }
 
@@ -84,21 +65,6 @@ public class MainController extends AppCompatActivity {
 
     public static final String EXTRA_ID = "ID";
     public static final String EXTRA_POSITION = "POSITION";
-
-    private void startBeginIllnessActivity(int id, int position, Context context) {
-        Intent i = new Intent(context, BeginIllnessActivity.class);
-        i.putExtra(EXTRA_POSITION, position);
-        i.putExtra(EXTRA_ID, id);
-        context.startActivity(i);
-    }
-
-    private void startEndIllnessActivity(int id, int position, Context context) {
-        Intent i = new Intent(context, EndIllnessActivity.class);
-        i.putExtra(EXTRA_ID, id);
-        i.putExtra(EXTRA_POSITION, position);
-        context.startActivity(i);
-
-    }
 
     public void onPersonSwipedToDelete(int position, Patient patient) {
         new DeletePatientTask().execute(patient);
@@ -128,7 +94,7 @@ public class MainController extends AppCompatActivity {
     public String setSchemaString(Patient patient, MainActivity mainActivity) {
         try {
             if (hasSchema(patient)) {
-               return mainActivity.getResources().getText(R.string.has_schema).toString();
+                return mainActivity.getResources().getText(R.string.has_schema).toString();
             }
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -143,6 +109,112 @@ public class MainController extends AppCompatActivity {
         task.execute(patient.getId());
         return task.get();
     }
+
+    private void getListFromDataSource() {
+        GetListFromDataSourceTask task = new GetListFromDataSourceTask();
+        task.execute();
+        try {
+            mainActivityView.setUpAdapterAndView(task.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void startBeginIllnessActivity(int id, int position, Context context) {
+        Intent i = new Intent(context, BeginIllnessActivity.class);
+        i.putExtra(EXTRA_POSITION, position);
+        i.putExtra(EXTRA_ID, id);
+        context.startActivity(i);
+    }
+
+    private void startEndIllnessActivity(int id, int position, Context context) {
+        Intent i = new Intent(context, EndIllnessActivity.class);
+        i.putExtra(EXTRA_ID, id);
+        i.putExtra(EXTRA_POSITION, position);
+        context.startActivity(i);
+
+    }
+
+    public Long getAge(Patient patient) throws ExecutionException, InterruptedException {
+        GetPatientAgeTask task = new GetPatientAgeTask();
+        task.execute(patient.getId());
+        return task.get();
+    }
+
+    public String formatAge(Long age) {
+        Long year = (age / 31536000000L);
+        Long month = (age / 2678400000L);
+        Long day = (age / 86400000L);
+
+
+        if (year >= 1) {
+            int i = year.intValue() % 100;
+            String y;
+            if (i >= 11 && i <= 14) {
+                y = " лет";
+            } else {
+                switch (year.intValue() % 10) {
+                    case 1:
+                        y = " год";
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        y = " года";
+                        break;
+                    default:
+                        y = " лет";
+                        break;
+                }
+            }
+            return year + y;
+
+        } else if (month > 0 && month < 11) {
+            String m;
+            switch (month.intValue() % 10) {
+                case 1:
+                    m = " месяц";
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    m = " месяца";
+                    break;
+                default:
+                    m = " месяцев";
+                    break;
+            }
+            return month + m;
+
+        } else if (day > 0 && day < 31) {
+            String d;
+            int i = day.intValue() % 100;
+            if (i >= 11 && i <= 14) {
+                d = " дней";
+            } else {
+
+                switch (day.intValue() % 10) {
+                    case 1:
+                        d = " день";
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                        d = " дня";
+                        break;
+                    default:
+                        d = " дней";
+                        break;
+                }
+            }
+            return day + d;
+        }
+        return null;
+    }
+
 
     private class GetListFromDataSourceTask extends AsyncTask<Void, Void, List<Patient>> {
 
@@ -192,10 +264,14 @@ public class MainController extends AppCompatActivity {
             }
             return true;
         }
+    }
 
+    private class GetPatientAgeTask extends AsyncTask<Integer, Void, Long> {
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
+        protected Long doInBackground(Integer... integers) {
+            Long dateOfBirth = patientDao.getDateOfBirth(integers[0]);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            return timestamp.getTime() - dateOfBirth;
         }
     }
 }

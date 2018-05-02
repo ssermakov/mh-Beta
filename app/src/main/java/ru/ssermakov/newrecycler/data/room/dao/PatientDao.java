@@ -33,4 +33,6 @@ public interface PatientDao {
     @Delete
     void delete (Patient patient);
 
+    @Query("SELECT dateOfBirth FROM patients WHERE id = :id")
+    Long getDateOfBirth(Integer id);
 }

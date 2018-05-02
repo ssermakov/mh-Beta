@@ -10,17 +10,13 @@ import ru.ssermakov.newrecycler.data.room.entity.Patient;
 
 public interface MainActivityViewInterface {
 
-    void startPersonDetailActivity(String name, String image);
+    void startPersonDetailActivity(int id);
 
-//    void setUpAdapterAndView (List<Person> listOfData);
     void setUpAdapterAndView (List<Patient> listOfData);
 
     void startAddPersonActivity();
 
     void deletePersonAt(int position);
 
-//    void toggleStateAndStartActivity(int position, int id);
-
-//    void takePhotoFromGallery (Person person, int position);
 }
 

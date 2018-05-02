@@ -5,8 +5,6 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.util.Date;
 
-import ru.ssermakov.newrecycler.data.room.converter.DateConverter;
-
 /**
  * Created by btb_wild on 26.03.2018.
  */
@@ -18,16 +16,16 @@ public class Patient {
     private String name;
     private Date dateOfBirth;
     private String state;
-    private String image;
+    private String imageUrl;
 
     public Patient() {
     }
 
-    public Patient(String name, Date dateOfBirth, String state, String image) {
+    public Patient(String name, Date dateOfBirth, String state, String imageUrl) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.state = state;
-        this.image = image;
+        this.imageUrl = imageUrl;
     }
 
     public int getId() {
@@ -46,8 +44,8 @@ public class Patient {
         return state;
     }
 
-    public String getImage() {
-        return image;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public void setId(int id) {
@@ -66,7 +64,7 @@ public class Patient {
         this.state = state;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

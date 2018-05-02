@@ -44,4 +44,16 @@ public interface CaseDao {
             "inner join illnesses on cases.illnessId = illnesses.id " +
             "where patients.id = :patientId and cases.endDate is null and `plan` is not null;")
     Integer isSchema(Integer patientId);
+
+//    @Query("select * " +
+//            "from cases " +
+//            "inner join patients on cases.patientId = patients.id " +
+//            "inner join illnesses on cases.illnessId = illnesses.id " +
+//            "where patients.id = :patientId  order by cases.id desc;")
+//    List<Case> getAllByPatientId(Integer patientId);
+//
+    @Query("select * " +
+            "from cases " +
+            "where patientId = :patientId  order by cases.id desc;")
+    List<Case> getAllByPatientId(Integer patientId);
 }

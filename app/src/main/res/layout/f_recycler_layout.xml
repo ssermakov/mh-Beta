@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,98 +17,132 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.1"
-            android:background="@drawable/background">
+            android:background="@drawable/background" />
 
-        </RelativeLayout>
-
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/relativeLayout2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:padding="8dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img"
                 android:layout_width="160dp"
-                android:layout_height="160dp"
+                android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textViewName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignStart="@+id/textViewStatus"
-                android:layout_alignTop="@+id/img"
+                android:layout_width="100sp"
+                android:layout_height="30sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:autoSizeMaxTextSize="100sp"
+                android:autoSizeMinTextSize="12sp"
+                android:autoSizeTextType="uniform"
                 android:text="Татьяна"
                 android:textAlignment="textStart"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="#000000"
-                android:textSize="28sp" />
+                android:textSize="28sp"
+                app:layout_constraintStart_toEndOf="@+id/img"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="19dp"
+                android:text="3 года"
+                app:layout_constraintBottom_toBottomOf="@+id/textViewName"
+                app:layout_constraintStart_toEndOf="@+id/textViewName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.55" />
 
             <TextView
                 android:id="@+id/textViewStatus"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textViewName"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="20dp"
-                android:layout_toEndOf="@id/img"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:textAlignment="textStart"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/img"
+                app:layout_constraintTop_toBottomOf="@+id/textViewName" />
 
             <TextView
                 android:id="@+id/has_cure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/textViewStatus"
-                android:layout_below="@+id/textViewStatus"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/noCure"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/img"
+                app:layout_constraintTop_toBottomOf="@+id/textViewStatus" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/set_cure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/has_cure"
-                android:layout_toStartOf="@id/edit_cure"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_playlist_add_black_24dp"
                 app:backgroundTint="@color/colorFAB"
                 app:borderWidth="1dp"
-                app:elevation="1dp" />
+                app:elevation="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/edit_cure"
+                app:layout_constraintStart_toEndOf="@+id/img"
+                app:layout_constraintTop_toBottomOf="@+id/has_cure" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/edit_cure"
-                android:layout_width="match_parent"
+                android:layout_width="213dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/has_cure"
-                android:layout_marginStart="20dp"
-                android:layout_toStartOf="@id/see_cure"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_edit_black_24dp"
                 app:backgroundTint="@color/colorFAB"
                 app:borderWidth="1dp"
-                app:elevation="1dp" />
+                app:elevation="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/img"
+                app:layout_constraintTop_toBottomOf="@+id/has_cure" />
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/see_cure"
-                android:layout_width="match_parent"
+                android:layout_width="179dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/has_cure"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_remove_red_eye_black_24dp"
                 app:backgroundTint="@color/colorFAB"
                 app:borderWidth="1dp"
-                app:elevation="1dp" />
-        </RelativeLayout>
+                app:elevation="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/edit_cure"
+                app:layout_constraintTop_toBottomOf="@+id/has_cure" />
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,6 +1,8 @@
 package ru.ssermakov.newrecycler.view;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,6 +63,8 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
         name.setText(patient.getName());
 
         imageViewDetailPhoto = findViewById(R.id.imageViewDetailPhoto);
+        Bitmap bm = BitmapFactory.decodeFile(patient.getImageUrl());
+        imageViewDetailPhoto.setImageBitmap(bm);
     }
 
     @Override

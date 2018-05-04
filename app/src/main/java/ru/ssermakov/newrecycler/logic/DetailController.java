@@ -53,7 +53,7 @@ public class DetailController {
             return "";
         }
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        return new String(format.format(startDate));
+        return format.format(startDate);
     }
 
     public Illness getIllnessNameById(Long id) throws ExecutionException, InterruptedException {

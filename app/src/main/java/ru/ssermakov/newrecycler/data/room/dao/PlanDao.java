@@ -29,4 +29,7 @@ public interface PlanDao {
 
     @Delete
     void delete(Plan plan);
+
+    @Query("SELECT `plan` from plans WHERE caseId = :caseId")
+    List<String> selectPlansByCaseId(Long caseId);
 }

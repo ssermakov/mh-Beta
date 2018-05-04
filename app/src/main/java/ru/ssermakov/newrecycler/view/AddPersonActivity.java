@@ -40,9 +40,9 @@ import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.AddPersonController;
 import ru.ssermakov.newrecycler.view.Interfaces.PersonActivityInterface;
-
+//TODO при смене ориентации сделать другой лэйаут... как в воцапе в group info
 public class AddPersonActivity extends AppCompatActivity
-                               implements PersonActivityInterface, View.OnClickListener {
+        implements PersonActivityInterface, View.OnClickListener {
 
 
     private static final int GALLERY_REQUEST = 1;
@@ -127,14 +127,56 @@ public class AddPersonActivity extends AppCompatActivity
                 String filePath = getRealPathFromURI(this, selectedImage);
                 File fileSource = new File(filePath);
 
+                Bitmap bm = decodeSampledBitmap(fileSource.getAbsolutePath(), 300, 300);
                 File fileDst = new File(this.getFilesDir(), fileName);
-                copyFile (fileSource, fileDst);
-                Bitmap bm = BitmapFactory.decodeFile(fileDst.getPath());
-                imageViewPhoto.setImageBitmap(bm);
-                this.filePath = fileDst.getPath();
 
+                try {
+                    FileOutputStream out = new FileOutputStream(fileDst);
+                    bm.compress(Bitmap.CompressFormat.PNG, 85, out);
+                    imageViewPhoto.setImageBitmap(bm);
+                    this.filePath = fileDst.getPath();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    private Bitmap decodeSampledBitmap(String path, int reqWidth, int reqHeight) {
+        // Читаем с inJustDecodeBounds=true для определения размеров
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+
+        // Вычисляем inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                reqHeight);
+
+        // Читаем с использованием inSampleSize коэффициента
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(path, options);
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Реальные размеры изображения
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Вычисляем наибольший inSampleSize, который будет кратным двум
+            // и оставит полученные размеры больше, чем требуемые
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 
     @Override
@@ -168,8 +210,6 @@ public class AddPersonActivity extends AppCompatActivity
             i1 = i1 + 1;
             age.setText(i2 + "/" + i1 + "/" + i);
         }
-
-
 
 
     }
@@ -222,8 +262,8 @@ public class AddPersonActivity extends AppCompatActivity
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
-            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);

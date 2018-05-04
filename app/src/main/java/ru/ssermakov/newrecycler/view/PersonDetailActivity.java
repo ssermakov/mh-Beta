@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +35,8 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
     private CustomPersonAdapter adapter;
     private DetailController detailController;
     public static int id;
-    Patient patient;
+    private Patient patient;
+    public static final String KEY_CASE_ID = "CASE_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
 
         @Override
         public void onBindViewHolder(CustomPersonAdapter.CustomPersonViewHolder holder, int position) {
-            Case aCase = listOfCases.get(position);
+            final Case aCase = listOfCases.get(position);
 
             holder.startDate.setText(
                     detailController.convertDateToString(
@@ -101,6 +103,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
                         )
                 );
             }
+
             Illness illness = null;
             try {
                 illness = detailController.getIllnessNameById(aCase.getIllnessId());
@@ -109,9 +112,21 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             holder.illnessName.setText(
                     illness.getName()
             );
+
+            holder.layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Long id =aCase.getId();
+
+                    Intent intent = new Intent(PersonDetailActivity.this, HistoryIllnessActivity.class);
+                    intent.putExtra(KEY_CASE_ID, id);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override
@@ -124,6 +139,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
             private TextView startDate;
             private TextView endDate;
             private TextView illnessName;
+            private ConstraintLayout layout;
 
             public CustomPersonViewHolder(View itemView) {
                 super(itemView);
@@ -131,6 +147,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
                 endDate = itemView.findViewById(R.id.textViewEndDate);
                 startDate = itemView.findViewById(R.id.textViewStartDate);
                 illnessName = itemView.findViewById(R.id.textViewIllnessName);
+                layout = itemView.findViewById(R.id.rootLayout);
             }
         }
     }

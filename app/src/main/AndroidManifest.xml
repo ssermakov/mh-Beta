@@ -24,10 +24,11 @@
         <activity android:name=".view.AddPersonActivity" />
         <activity
             android:name=".view.BeginIllnessActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.EndIllnessActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".view.HistoryIllnessActivity"></activity>
     </application>
 
 </manifest>

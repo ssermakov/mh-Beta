@@ -17,23 +17,44 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/name"
+        app:layout_constraintBottom_toTopOf="@+id/constraintBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:elevation="5dp"
-        android:textSize="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/div_center"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="Катя" />
+        android:background="#d1d1d1"
+        app:layout_constraintBottom_toBottomOf="@+id/div_center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/editNameButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="edit name"
+            app:layout_constraintBottom_toBottomOf="@+id/name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/name" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:elevation="5dp"
+            android:textSize="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Катя" />
+    </android.support.constraint.ConstraintLayout>
 
     <TextView
         android:id="@+id/textViewHistory"
@@ -64,13 +85,16 @@
 
     <View
         android:id="@+id/div_center"
-        android:layout_width="380dp"
+        android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:elevation="5dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

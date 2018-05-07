@@ -144,7 +144,7 @@ public class MainController extends AppCompatActivity {
         return task.get();
     }
 
-    public String formatAge(Long age) {
+    public static String formatAge(Long age) {
         Long year = (age / 31536000000L);
         Long month = (age / 2678400000L);
         Long day = (age / 86400000L);

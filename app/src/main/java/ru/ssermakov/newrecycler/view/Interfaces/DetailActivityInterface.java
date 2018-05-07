@@ -8,5 +8,8 @@ public interface DetailActivityInterface {
 
     void setUpAdapterAndView (List<Case> caseList);
 
+    void setAge (String ageString);
+
+
 
 }

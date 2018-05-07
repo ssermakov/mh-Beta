@@ -2,6 +2,7 @@ package ru.ssermakov.newrecycler.logic;
 
 import android.os.AsyncTask;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,13 +21,13 @@ import ru.ssermakov.newrecycler.view.PersonDetailActivity;
 
 public class DetailController {
 
-    private DetailActivityInterface detailActivityInterface;
+    private DetailActivityInterface detailActivityView;
     private CaseDao caseDao;
     private PatientDao patientDao;
     private IllnessDao illnessDao;
 
-    public DetailController(DetailActivityInterface detailActivityInterface) {
-        this.detailActivityInterface = detailActivityInterface;
+    public DetailController(DetailActivityInterface detailActivityView) {
+        this.detailActivityView = detailActivityView;
         caseDao = App.getInstance().getDb().caseDao();
         patientDao = App.getInstance().getDb().patientDao();
         illnessDao = App.getInstance().getDb().illnessDao();
@@ -39,13 +40,23 @@ public class DetailController {
         GetCasesByPatientIdTask task = new GetCasesByPatientIdTask();
         task.execute(PersonDetailActivity.id);
         try {
-            detailActivityInterface.setUpAdapterAndView(task.get());
+            detailActivityView.setUpAdapterAndView(task.get());
+            detailActivityView.setAge(
+                    MainController.formatAge(
+                            getAge(PersonDetailActivity.id)
+                    )
+            );
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+    }
 
+    private Long getAge(Integer patientId) throws ExecutionException, InterruptedException {
+        GetPatientAgeTask task = new GetPatientAgeTask();
+        task.execute(patientId);
+        return task.get();
     }
 
     public String convertDateToString(Date startDate) {
@@ -92,6 +103,15 @@ public class DetailController {
         protected Patient doInBackground(Long... longs) {
             Patient patient = patientDao.getById(longs[0]);
             return patient;
+        }
+    }
+
+    private class GetPatientAgeTask extends AsyncTask<Integer, Void, Long> {
+        @Override
+        protected Long doInBackground(Integer... integers) {
+            Long dateOfBirth = patientDao.getDateOfBirth(integers[0]);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            return timestamp.getTime() - dateOfBirth;
         }
     }
 }

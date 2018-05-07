@@ -35,7 +35,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
     private CustomPersonAdapter adapter;
     private DetailController detailController;
     public static int id;
-    private Patient patient;
+    public static Patient patient;
     public static final String KEY_CASE_ID = "CASE_ID";
 
     @Override
@@ -75,6 +75,12 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CustomPersonAdapter();
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void setAge(String ageString) {
+        TextView age = findViewById(R.id.tvAge);
+        age.setText(ageString);
     }
 
     private class CustomPersonAdapter extends

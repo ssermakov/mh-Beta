@@ -13,7 +13,6 @@ import ru.ssermakov.newrecycler.view.Interfaces.HistoryIllnessInterface;
 public class HistoryIllnessActivity extends AppCompatActivity implements HistoryIllnessInterface {
 
     private Long caseId;
-    private HistoryIllnessController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +20,7 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
         setContentView(R.layout.activity_history_illness);
 
         getIncomingIntent();
-        controller = new HistoryIllnessController(this, caseId);
+        new HistoryIllnessController(this, caseId);
     }
 
     private void getIncomingIntent() {

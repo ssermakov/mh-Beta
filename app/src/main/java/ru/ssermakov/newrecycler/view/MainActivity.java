@@ -1,12 +1,14 @@
 package ru.ssermakov.newrecycler.view;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,8 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +31,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
+import ru.ssermakov.newrecycler.Utils.Utils;
 import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.view.Interfaces.MainActivityViewInterface;
@@ -51,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         recyclerView = findViewById(R.id.f_recycler);
         layoutInflater = getLayoutInflater();
 
@@ -69,6 +75,21 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             Toast.makeText(this, "You have permissions", Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    public static int getActionBarHeight(Activity activity) {
+        TypedValue typedValue = new TypedValue();
+
+        int attributeResourceId = android.R.attr.actionBarSize;
+        if (activity instanceof AppCompatActivity) {
+            attributeResourceId = R.attr.actionBarSize;
+        }
+
+        if (activity.getTheme().resolveAttribute(attributeResourceId, typedValue, true)) {
+            return TypedValue.complexToDimensionPixelSize(typedValue.data, activity.getResources().getDisplayMetrics());
+        }
+
+        return 0;
     }
 
     @Override
@@ -104,10 +125,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                 int position = viewHolder.getAdapterPosition();
                 if (direction == 4) {
 
-                        mainController.onPersonSwipedToChangeState(
-                                position,
-                                listOfData.get(position),
-                                getBaseContext());
+                    mainController.onPersonSwipedToChangeState(
+                            position,
+                            listOfData.get(position),
+                            getBaseContext());
 
                 } else {
                     mainController.onPersonSwipedToDelete(
@@ -228,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                     mainController.onPersonNameClick(patient);
                 }
             };
-            holder.container.setOnClickListener(oclConteiner);
+            holder.constraintLayout.setOnClickListener(oclConteiner);
 
         }
 
@@ -242,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
             private ImageView image;
             private TextView name;
-            private ViewGroup container;
+            private ConstraintLayout constraintLayout;
             private CardView cardView;
             private TextView illTextView;
             private TextView schema;
@@ -251,9 +272,26 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             public CustomViewHolder(View itemView) {
                 super(itemView);
 
+
+                constraintLayout = itemView.findViewById(R.id.root_list_item);
+                int screenHeight = Utils.getScreenHeight(itemView.getContext());
+                int actionBarHeight = getActionBarHeight(MainActivity.this);
+                DisplayMetrics metrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                int valueToSubtract = Utils.getValueToSubtract(metrics.densityDpi);
+                if (getItemCount() > 1) {
+                    constraintLayout.setMinHeight(
+                            ((screenHeight - actionBarHeight - valueToSubtract) / 2)
+                    );
+                } else {
+                    constraintLayout.setMinHeight(
+                            ((screenHeight - actionBarHeight - valueToSubtract))
+                    );
+                }
+
+
                 this.image = itemView.findViewById(R.id.img);
                 this.name = itemView.findViewById(R.id.textViewName);
-                this.container = itemView.findViewById(R.id.root_list_item);
                 this.cardView = itemView.findViewById(R.id.card_view);
                 this.illTextView = itemView.findViewById(R.id.textViewStatus);
                 this.schema = itemView.findViewById(R.id.has_cure);

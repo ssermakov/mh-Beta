@@ -1,7 +1,5 @@
 package ru.ssermakov.newrecycler.view.Interfaces;
 
-import java.util.List;
-
 public interface HistoryIllnessInterface {
 
     void setStartDate (String startDate);

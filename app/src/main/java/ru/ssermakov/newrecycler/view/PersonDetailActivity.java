@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,13 +19,14 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
+import ru.ssermakov.newrecycler.Utils.Utils;
 import ru.ssermakov.newrecycler.data.room.entity.Case;
 import ru.ssermakov.newrecycler.data.room.entity.Illness;
 import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.DetailController;
 import ru.ssermakov.newrecycler.view.Interfaces.DetailActivityInterface;
 
-public class PersonDetailActivity extends AppCompatActivity implements DetailActivityInterface {
+public class PersonDetailActivity extends AppCompatActivity implements DetailActivityInterface, View.OnClickListener {
 
     private TextView name;
     private TextView textViewHistory;
@@ -34,6 +36,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
     private LayoutInflater layoutInflater;
     private CustomPersonAdapter adapter;
     private DetailController detailController;
+    private FloatingActionButton fab;
     public static int id;
     public static Patient patient;
     public static final String KEY_CASE_ID = "CASE_ID";
@@ -50,14 +53,15 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
         recyclerView = findViewById(R.id.illnessRecycler);
         layoutInflater = getLayoutInflater();
 
+        fab = findViewById(R.id.editFAB);
+        fab.setOnClickListener(this);
+
 
         detailController = new DetailController(this);
 
         try {
             patient = detailController.getPatientById((long) id);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -67,6 +71,17 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
         imageViewDetailPhoto = findViewById(R.id.imageViewDetailPhoto);
         Bitmap bm = BitmapFactory.decodeFile(patient.getImageUrl());
         imageViewDetailPhoto.setImageBitmap(bm);
+
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 
     @Override
@@ -81,6 +96,22 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
     public void setAge(String ageString) {
         TextView age = findViewById(R.id.tvAge);
         age.setText(ageString);
+    }
+
+    @Override
+    public void setEditFAB() {
+        Utils.scale(fab, 400);
+    }
+
+    public static final String KEY_PATIENT_ID = "PATIENT_ID";
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+        if (viewId == R.id.editFAB) {
+            Intent i = new Intent(this, AddPersonActivity.class);
+            i.putExtra(KEY_PATIENT_ID, patient.getId());
+            startActivity(i);
+        }
     }
 
     private class CustomPersonAdapter extends
@@ -113,9 +144,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
             Illness illness = null;
             try {
                 illness = detailController.getIllnessNameById(aCase.getIllnessId());
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
 

@@ -40,6 +40,7 @@ import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.AddPersonController;
 import ru.ssermakov.newrecycler.view.Interfaces.PersonActivityInterface;
+
 //TODO при смене ориентации сделать другой лэйаут... как в воцапе в group info
 public class AddPersonActivity extends AppCompatActivity
         implements PersonActivityInterface, View.OnClickListener {
@@ -48,14 +49,14 @@ public class AddPersonActivity extends AppCompatActivity
     private static final int GALLERY_REQUEST = 1;
     private EditText editTextName;
     private ImageView imageViewPhoto;
-    private AddPersonController addPersonController;
     private AddPersonController addPatientController;
-    private int personId;
     FloatingActionButton floatingActionButton;
     private String filePath;
     public final static String PERSON_ID = "PERSON_ID";
     private static TextView age;
-    Long id;
+    private Long id;
+    private boolean editMode = false;
+    private int patientId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,33 +73,57 @@ public class AddPersonActivity extends AppCompatActivity
         imageViewPhoto.setOnClickListener(this);
         ageRoot.setOnClickListener(this);
 
-        addPatientController = new AddPersonController();
+        addPatientController = new AddPersonController(this);
+
+        if (getIntent().hasExtra(PersonDetailActivity.KEY_PATIENT_ID)) {
+            patientId = getIntent().getIntExtra(PersonDetailActivity.KEY_PATIENT_ID, -1);
+            editMode = true;
+            addPatientController = new AddPersonController(this, patientId);
+            addPatientController.setImage();
+            addPatientController.setName();
+            addPatientController.setDate();
+        }
     }
 
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == R.id.fabCreateNewPerson) {
-            String personName = editTextName.getText().toString().trim();
-            String personState = getResources().getString(R.string.good_state);
-            Date dateOfBirth = convertStringToDate(age.getText().toString());
+
+            if (editMode) {
+                addPatientController.updatePatient(
+                        editTextName.getText().toString().trim(),
+                        convertStringToDate(age.getText().toString()),
+                        filePath
+                );
+
+                Intent i = new Intent(this, PersonDetailActivity.class);
+                i.putExtra(MainActivity.EXTRA_ID, patientId);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                startActivity(i);
+
+            } else {
+                String patientName = editTextName.getText().toString().trim();
+                String patientState = getResources().getString(R.string.good_state);
+                Date dateOfBirth = convertStringToDate(age.getText().toString());
+
 
 //            new db
-            Patient patient = new Patient(personName, dateOfBirth, personState, filePath);
-            try {
-                this.id = addPatientController.addPatient(patient);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                Patient patient = new Patient(patientName, dateOfBirth, patientState, filePath);
+                try {
+                    this.id = addPatientController.addPatient(patient);
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Intent i = new Intent(this, MainActivity.class);
+                i.putExtra(PERSON_ID, id);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                startActivity(i);
             }
 
-
-            Intent i = new Intent(this, MainActivity.class);
-            i.putExtra(PERSON_ID, id);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-            startActivity(i);
         }
 
         if (viewId == R.id.imageViewPhoto) {
@@ -180,8 +205,22 @@ public class AddPersonActivity extends AppCompatActivity
     }
 
     @Override
-    public void setPersonId(int lastPersonId) {
-        personId = lastPersonId;
+    public void setImage(Patient patient) {
+        Bitmap bm = BitmapFactory.decodeFile(patient.getImageUrl());
+        imageViewPhoto.setImageBitmap(bm);
+    }
+
+    @Override
+    public void setName(Patient patient) {
+        editTextName.setText(patient.getName());
+    }
+
+    @Override
+    public void setDate(Patient patient) {
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        age.setText(
+                format.format(patient.getDateOfBirth())
+        );
     }
 
     private void showDatePickDialog() {
@@ -264,14 +303,18 @@ public class AddPersonActivity extends AppCompatActivity
         try {
             String[] proj = {MediaStore.Images.Media.DATA};
             cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
+            int column_index;
+            if (cursor != null) {
+                column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                cursor.moveToFirst();
+                return cursor.getString(column_index);
+            }
         } finally {
             if (cursor != null) {
                 cursor.close();
             }
         }
+        return null;
     }
 
     private Date convertStringToDate(String string) {

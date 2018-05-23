@@ -21,14 +21,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.PersonDetailActivity" />
-        <activity android:name=".view.AddPersonActivity" />
+        <activity android:name=".view.AddPersonActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".view.BeginIllnessActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.EndIllnessActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".view.HistoryIllnessActivity"></activity>
+        <activity android:name=".view.HistoryIllnessActivity" />
     </application>
 
 </manifest>

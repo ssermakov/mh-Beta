@@ -29,12 +29,12 @@ public class BeginIllnessActivity extends AppCompatActivity {
         id = intent.getIntExtra(MainController.EXTRA_ID, -1);
         position = intent.getIntExtra(MainController.EXTRA_POSITION, -1);
         initTabs();
-
     }
 
     @Override
     public void onBackPressed() {
         Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra(KEY_EXTRA_POSITION, position);
         i.putExtra(KEY_EXTRA_ID, id);
         startActivity(i);

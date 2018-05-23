@@ -220,8 +220,7 @@ public class MainController extends AppCompatActivity {
 
         @Override
         protected List<Patient> doInBackground(Void... voids) {
-            List<Patient> patientList = patientDao.getAll();
-            return patientList;
+            return patientDao.getAll();
         }
 
         @Override

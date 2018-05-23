@@ -34,6 +34,24 @@ public class DetailController {
 
 
         getListCasesFromDataSource();
+        setAge();
+        setFAB();
+    }
+
+    private void setFAB() {
+        detailActivityView.setEditFAB();
+    }
+
+    private void setAge() {
+        try {
+            detailActivityView.setAge(
+                    MainController.formatAge(
+                            getAge(PersonDetailActivity.id)
+                    )
+            );
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getListCasesFromDataSource() {
@@ -41,14 +59,7 @@ public class DetailController {
         task.execute(PersonDetailActivity.id);
         try {
             detailActivityView.setUpAdapterAndView(task.get());
-            detailActivityView.setAge(
-                    MainController.formatAge(
-                            getAge(PersonDetailActivity.id)
-                    )
-            );
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }
@@ -83,8 +94,7 @@ public class DetailController {
 
         @Override
         protected List<Case> doInBackground(Integer... integers) {
-            List<Case> caseList = caseDao.getAllByPatientId(integers[0]);
-            return caseList;
+            return caseDao.getAllByPatientId(integers[0]);
         }
     }
 
@@ -92,8 +102,7 @@ public class DetailController {
 
         @Override
         protected Illness doInBackground(Long... longs) {
-            Illness illness = illnessDao.getById(longs[0]);
-            return illness;
+            return illnessDao.getById(longs[0]);
         }
     }
 
@@ -101,8 +110,7 @@ public class DetailController {
 
         @Override
         protected Patient doInBackground(Long... longs) {
-            Patient patient = patientDao.getById(longs[0]);
-            return patient;
+            return patientDao.getById(longs[0]);
         }
     }
 

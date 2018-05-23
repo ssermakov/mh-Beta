@@ -1,5 +1,6 @@
 package ru.ssermakov.newrecycler.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
 
 
     }
+
 
     @Override
     public void setStartDate(String startDate) {

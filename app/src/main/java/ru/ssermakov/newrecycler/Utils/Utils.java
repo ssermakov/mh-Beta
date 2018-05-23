@@ -3,7 +3,9 @@ package ru.ssermakov.newrecycler.Utils;
 import android.content.Context;
 import android.graphics.Point;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.OvershootInterpolator;
 
 public class Utils {
 
@@ -67,5 +69,17 @@ public class Utils {
 
         }
         return value;
+    }
+
+    public static void scale(View view, long delay) {
+        view.setScaleX(0);
+        view.setScaleY(0);
+        view.animate()
+                .scaleX(1)
+                .scaleY(1)
+                .setDuration(500)
+                .setStartDelay(delay)
+                .setInterpolator(new OvershootInterpolator())
+                .start();
     }
 }

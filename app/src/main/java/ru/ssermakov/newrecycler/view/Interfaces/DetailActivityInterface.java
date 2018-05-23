@@ -10,6 +10,8 @@ public interface DetailActivityInterface {
 
     void setAge (String ageString);
 
+    void setEditFAB ();
+
 
 
 }

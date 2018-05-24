@@ -5,26 +5,31 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.ssermakov.newrecycler.R;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
-import studio.carbonylgroup.textfieldboxes.SimpleTextChangedWatcher;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 /**
  * Created by btb_wild on 13.03.2018.
  */
 
-public class SymptomsFragment extends AbstractTabFragment implements View.OnClickListener, SimpleTextChangedWatcher {
+public class SymptomsFragment extends AbstractTabFragment{
 
     TextFieldBoxes textFieldBoxesSymptoms;
+    private RecyclerView symptomsRecycler;
     ExtendedEditText extendedEditTextSymptoms;
-    private String allText;
+    private LayoutInflater layoutinflater;
+    private List<String> listOfSymptoms;
 
 
     @Nullable
@@ -39,9 +44,12 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
         symptomsListTextView = view.findViewById(R.id.symptomsListTextView);
 
 
-        textFieldBoxesSymptoms.setOnClickListener(this);
-        textFieldBoxesSymptoms.getEndIconImageButton().setOnClickListener(this);
-        textFieldBoxesSymptoms.setSimpleTextChangeWatcher(this);
+        symptomsRecycler = view.findViewById(R.id.symptoms_recycler);
+        layoutinflater = getLayoutInflater();
+
+        listOfSymptoms = new ArrayList<>();
+
+
         return view;
     }
 
@@ -60,42 +68,46 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
         this.context = context;
     }
 
-    @Override
-    public void onClick(View v) {
-        int viewId = v.getId();
-        if (viewId == R.id.text_field_boxes) {
-            if (allText == null) {
-                allText = "1. ";
-                symptomsListTextView.setText(allText);
-            }
+    private class CustomSymptomsAdapter extends
+            RecyclerView.Adapter<CustomSymptomsAdapter.CustomSymptomsViewHolder> {
+
+        @Override
+        public CustomSymptomsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = layoutinflater.inflate(R.layout.symptom_item_recycler_layout, parent, false);
+            return new CustomSymptomsViewHolder(v);
         }
 
-        String s = extendedEditTextSymptoms.getText().toString().trim();
-        if (!s.equals("")) {
-            symptoms.add(s);
-            if (allText == null) {
-                allText = String.valueOf(symptoms.size()) + ". " + s + "\n" + String.valueOf(symptoms.size() + 1) + ". ";
+        @Override
+        public void onBindViewHolder(CustomSymptomsViewHolder holder, int position) {
+            if (listOfSymptoms.isEmpty()) {
+
+                holder.symptomText.setVisibility(View.GONE);
+                holder.editImage.setVisibility(View.GONE);
+
             } else {
-                allText += s + "\n" + String.valueOf(symptoms.size() + 1) + ". ";
+                String symptom = listOfSymptoms.get(position);
+
+                holder.symptomText.setText(symptom);
             }
         }
-        extendedEditTextSymptoms.setText("");
-    }
 
+        @Override
+        public int getItemCount() {
+            return listOfSymptoms.size();
+        }
 
-    @Override
-    public void onTextChanged(String s, boolean b) {
-        String temp = allText;
-        if (s.equals("")) {
-            if (allText != null) {
-                temp = temp.substring(0, temp.length() - 3);
-                symptomsListTextView.setText(temp);
+        class CustomSymptomsViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView symptomText;
+            private ImageView editImage;
+
+            CustomSymptomsViewHolder(View itemView) {
+                super(itemView);
+
+                symptomText = itemView.findViewById(R.id.symptomText);
+                editImage = itemView.findViewById(R.id.editImage);
             }
         }
-        if (allText == null) {
-            symptomsListTextView.setText(s);
-        } else {
-            symptomsListTextView.setText(temp + s);
-        }
+
     }
 }

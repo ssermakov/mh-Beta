@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 public class PlanFragment extends AbstractTabFragment implements View.OnClickListener, SimpleTextChangedWatcher {
 
 
-    Button button;
+    FloatingActionButton button;
 
     TextFieldBoxes textFieldBoxesPlans;
     ExtendedEditText extendedEditTextPlans;
@@ -60,7 +61,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         textFieldBoxesPlans = view.findViewById(R.id.text_field_boxes_plan);
         extendedEditTextPlans = view.findViewById(R.id.extended_edit_text_plan);
         plansListTextView = view.findViewById(R.id.plansListTextView);
-        button = view.findViewById(R.id.button);
+        button = view.findViewById(R.id.floatingActionButton);
 
 
         textFieldBoxesPlans.setOnClickListener(this);

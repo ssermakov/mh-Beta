@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -72,8 +71,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_MEDIA);
         } else {
-            Toast.makeText(this, "You have permissions", Toast.LENGTH_SHORT).show();
-
+//            Toast.makeText(this, "You have permissions", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -175,19 +173,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.fm_add_person) {
-//            Open new activity for create new Person
             mainController.onAddPersonClick();
-            showToast("Add Person");
         }
-        if (item.getItemId() == R.id.fm_search_person) {
-
-            showToast("Search");
-        }
+//        if (item.getItemId() == R.id.fm_search_person) {
+//
+//            showToast("Search");
+//        }
         return super.onOptionsItemSelected(item);
-    }
-
-    void showToast(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 
     private class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
@@ -232,9 +224,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                     holder.illTextView.setText(mainController.createResultString(
                             mainController.getDurationOfIllness(patient)
                     ));
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }

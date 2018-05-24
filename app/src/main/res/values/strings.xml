@@ -15,4 +15,7 @@
     <string name="action_settings">Settings</string>
     <string name="noCure">Лечение не назначено</string>
     <string name="history">History</string>
+    <string name="add_patient">Add Patient</string>
+    <string name="enter_plan">Вводите назначения врача по одному.</string>
+    <string name="schema">Схема лечения</string>
 </resources>

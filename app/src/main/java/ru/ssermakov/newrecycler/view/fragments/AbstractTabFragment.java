@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,16 +52,15 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
         this.title = title;
     }
 
-    public void testToast() {
-        Toast.makeText(context, "Test Toast!", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         plans = new ArrayList<>();
         symptoms = new ArrayList<>();
+
+
+
     }
 
     @Nullable

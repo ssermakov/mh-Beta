@@ -43,6 +43,6 @@ dependencies {
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
 
     //dbinspector : 3.4.1
-    debugImplementation 'im.dino:dbinspector:3.4.1'
+//    debugImplementation 'im.dino:dbinspector:3.4.1'
 
 }

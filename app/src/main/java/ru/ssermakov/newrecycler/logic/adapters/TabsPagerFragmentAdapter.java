@@ -52,4 +52,6 @@ public class TabsPagerFragmentAdapter extends FragmentPagerAdapter {
         tabs.put(1, (AbstractTabFragment) SymptomsFragment.getInstance(context));
         tabs.put(2, (AbstractTabFragment) PlanFragment.getInstance(context));
     }
+
+    
 }

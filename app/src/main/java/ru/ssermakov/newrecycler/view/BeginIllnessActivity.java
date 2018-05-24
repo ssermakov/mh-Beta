@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Toast;
 
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.logic.MainController;
@@ -29,6 +32,7 @@ public class BeginIllnessActivity extends AppCompatActivity {
         id = intent.getIntExtra(MainController.EXTRA_ID, -1);
         position = intent.getIntExtra(MainController.EXTRA_POSITION, -1);
         initTabs();
+
     }
 
     @Override
@@ -39,14 +43,36 @@ public class BeginIllnessActivity extends AppCompatActivity {
         i.putExtra(KEY_EXTRA_ID, id);
         startActivity(i);
     }
+
     private void initTabs() {
         viewPager = findViewById(R.id.view_pager);
+        tabLayout = findViewById(R.id.tabLayout);
         TabsPagerFragmentAdapter adapter = new TabsPagerFragmentAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
-
-        tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+
+
+
     }
 
 }

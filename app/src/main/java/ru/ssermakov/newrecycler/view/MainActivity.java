@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                 return false;
             }
 
+
+
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
@@ -205,9 +207,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
                                 mainController.getAge(patient)
                         )
                 );
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -232,14 +232,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             Bitmap bm = BitmapFactory.decodeFile(patient.getImageUrl());
             holder.image.setImageBitmap(bm);
 
-            View.OnClickListener oclConteiner = new View.OnClickListener() {
+            View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Patient patient = listOfData.get(position);
                     mainController.onPersonNameClick(patient);
                 }
             };
-            holder.constraintLayout.setOnClickListener(oclConteiner);
+            holder.constraintLayout.setOnClickListener(onClickListenerContainer);
 
         }
 

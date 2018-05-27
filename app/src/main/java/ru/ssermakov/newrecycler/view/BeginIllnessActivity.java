@@ -1,19 +1,22 @@
 package ru.ssermakov.newrecycler.view;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Toast;
 
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.logic.adapters.TabsPagerFragmentAdapter;
+import ru.ssermakov.newrecycler.view.fragments.AbstractTabFragment;
+import ru.ssermakov.newrecycler.view.fragments.ItemChangeDialogFragment;
+import ru.ssermakov.newrecycler.view.fragments.SymptomsFragment;
 
-public class BeginIllnessActivity extends AppCompatActivity {
+public class BeginIllnessActivity extends AppCompatActivity
+        implements ItemChangeDialogFragment.EventListener,
+        AbstractTabFragment.ItemContentPassListener {
 
     private TabLayout tabLayout;
     public static ViewPager viewPager;
@@ -22,6 +25,9 @@ public class BeginIllnessActivity extends AppCompatActivity {
     public static final String KEY_EXTRA_POSITION = "EXTRA_POSITION";
     private int position;
     private int id;
+    public static FragmentManager fm;
+    public static String itemContent;
+    public static String no_illness;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,10 @@ public class BeginIllnessActivity extends AppCompatActivity {
         id = intent.getIntExtra(MainController.EXTRA_ID, -1);
         position = intent.getIntExtra(MainController.EXTRA_POSITION, -1);
         initTabs();
+
+        no_illness = getResources().getString(R.string.no_illness);
+        fm = getFragmentManager();
+
 
     }
 
@@ -71,8 +81,17 @@ public class BeginIllnessActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
+    @Override
+    public void event(String s) {
+        SymptomsFragment.listOfSymptoms.set(AbstractTabFragment.currentItemPosition, s);
+        SymptomsFragment.CustomSymptomsAdapter adapter = SymptomsFragment.adapter;
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void passData(String data) {
+        itemContent = data;
+    }
 }

@@ -18,4 +18,5 @@
     <string name="add_patient">Add Patient</string>
     <string name="enter_plan">Вводите назначения врача по одному.</string>
     <string name="schema">Схема лечения</string>
+    <string name="no_illness">illness was not entered</string>
 </resources>

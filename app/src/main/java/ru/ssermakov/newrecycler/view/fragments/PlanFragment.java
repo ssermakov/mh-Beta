@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
@@ -40,7 +41,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
 
     public PlanFragment() {
-        fragmentController = new FragmentController(this);
+        fragmentController = new FragmentController(this, this);
         Intent i = BeginIllnessActivity.intent;
         id = i.getIntExtra(MainController.EXTRA_ID, -1);
         position = i.getIntExtra(MainController.EXTRA_POSITION, -1);
@@ -78,7 +79,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (symptoms.size() == 0) {
+                if (SymptomsFragment.listOfSymptoms.size() == 0) {
                     BeginIllnessActivity.viewPager.setCurrentItem(1, true);
                 } else {
 
@@ -107,7 +108,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
                     fragmentController.togglePatientState(id);
 
 
-                    fragmentController.createSymptoms(caseId, symptoms);
+                    fragmentController.createSymptoms(caseId, (ArrayList<String>) SymptomsFragment.listOfSymptoms);
                     fragmentController.createPlans(caseId, plans);
 
                     Intent i = new Intent(getContext(), MainActivity.class);

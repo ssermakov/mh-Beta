@@ -1,5 +1,6 @@
 package ru.ssermakov.newrecycler.logic;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 
@@ -23,6 +24,8 @@ import ru.ssermakov.newrecycler.data.room.entity.Illness;
 import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.data.room.entity.Plan;
 import ru.ssermakov.newrecycler.data.room.entity.Symptom;
+import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
+import ru.ssermakov.newrecycler.view.Interfaces.FragmentInterface;
 import ru.ssermakov.newrecycler.view.fragments.AbstractTabFragment;
 
 /**
@@ -39,19 +42,22 @@ public class FragmentController extends AppCompatActivity {
     private PlanDao planDao;
     private PatientDao patientDao;
 
-    public FragmentController(AbstractTabFragment abstractTabFragment) {
+    private FragmentInterface fragmentInterface;
+
+    public FragmentController(AbstractTabFragment abstractTabFragment, FragmentInterface fragmentInterface) {
         illnessDao = App.getInstance().getDb().illnessDao();
         caseDao = App.getInstance().getDb().caseDao();
         symptomDao = App.getInstance().getDb().symptomDao();
         planDao = App.getInstance().getDb().planDao();
         patientDao = App.getInstance().getDb().patientDao();
         this.abstractTabFragment = abstractTabFragment;
+        this.fragmentInterface = fragmentInterface;
     }
 
 
     public void createIllness(String s) throws ExecutionException, InterruptedException {
         if (s.equals("")) {
-            s = "illness_not_entered";
+            s = BeginIllnessActivity.no_illness;
         }
         IsIllnessExistTask task = new IsIllnessExistTask();
         task.execute(s);
@@ -64,7 +70,7 @@ public class FragmentController extends AppCompatActivity {
 
     public int getIllnessIdFromDb(String illnessName) throws ExecutionException, InterruptedException {
         if (illnessName.equals("")) {
-            illnessName = "illness_not_entered";
+            illnessName = BeginIllnessActivity.no_illness;
         }
         getIllnessIdFromDbTask task = new getIllnessIdFromDbTask();
         task.execute(illnessName);
@@ -109,6 +115,10 @@ public class FragmentController extends AppCompatActivity {
     public void togglePatientState(int id) {
         TogglePatientStateTask task = new TogglePatientStateTask();
         task.execute(id);
+    }
+
+    public void onItemClick(int i, String s) {
+        fragmentInterface.startDialogToChangeItemContent(i, s);
     }
 
 

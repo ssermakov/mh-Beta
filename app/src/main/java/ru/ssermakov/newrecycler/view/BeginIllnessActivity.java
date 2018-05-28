@@ -11,11 +11,14 @@ import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.logic.adapters.TabsPagerFragmentAdapter;
 import ru.ssermakov.newrecycler.view.fragments.AbstractTabFragment;
-import ru.ssermakov.newrecycler.view.fragments.ItemChangeDialogFragment;
+import ru.ssermakov.newrecycler.view.fragments.ItemChangePlanDialogFragment;
+import ru.ssermakov.newrecycler.view.fragments.ItemChangeSymptomDialogFragment;
+import ru.ssermakov.newrecycler.view.fragments.PlanFragment;
 import ru.ssermakov.newrecycler.view.fragments.SymptomsFragment;
 
 public class BeginIllnessActivity extends AppCompatActivity
-        implements ItemChangeDialogFragment.EventListener,
+        implements ItemChangeSymptomDialogFragment.EventListener,
+        ItemChangePlanDialogFragment.EventListener,
         AbstractTabFragment.ItemContentPassListener {
 
     private TabLayout tabLayout;
@@ -84,9 +87,16 @@ public class BeginIllnessActivity extends AppCompatActivity
     }
 
     @Override
-    public void event(String s) {
+    public void editSymptom(String s) {
         SymptomsFragment.listOfSymptoms.set(AbstractTabFragment.currentItemPosition, s);
         SymptomsFragment.CustomSymptomsAdapter adapter = SymptomsFragment.adapter;
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void editPlan(String s) {
+        PlanFragment.listOfPlans.set(AbstractTabFragment.currentItemPosition, s);
+        PlanFragment.CustomPlansAdapter adapter = PlanFragment.adapter;
         adapter.notifyDataSetChanged();
     }
 

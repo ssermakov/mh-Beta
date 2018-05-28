@@ -15,10 +15,10 @@ import java.util.Objects;
 import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 
-public class ItemChangeDialogFragment extends android.support.v4.app.DialogFragment {
+public class ItemChangePlanDialogFragment extends android.support.v4.app.DialogFragment {
 
     public interface EventListener {
-        void event(String s);
+        void editPlan(String s);
     }
 
     EventListener eventListener;
@@ -49,7 +49,7 @@ public class ItemChangeDialogFragment extends android.support.v4.app.DialogFragm
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        eventListener.event(editText.getText().toString());
+                        eventListener.editPlan(editText.getText().toString());
                     }
                 })
                 .setView(v)
@@ -63,3 +63,4 @@ public class ItemChangeDialogFragment extends android.support.v4.app.DialogFragm
         return builder.create();
     }
 }
+

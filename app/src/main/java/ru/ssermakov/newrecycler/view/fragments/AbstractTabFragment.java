@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ru.ssermakov.newrecycler.logic.FragmentController;
 import ru.ssermakov.newrecycler.view.Interfaces.FragmentInterface;
@@ -34,15 +35,15 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     protected static FragmentController fragmentController;
     protected int id;
     protected int position;
-    protected static ArrayList<String> symptoms, plans;
     protected static TextView startDateTextView;
+    public static List<String> listOfPlans;
     protected TextView dateHint;
-    protected TextView plansListTextView;
     protected static String dateFromDatePicker;
 
     protected static ExtendedEditText extendedEditTextIllnessName;
 
-    protected static android.support.v4.app.DialogFragment itemChangeDialog;
+    protected static android.support.v4.app.DialogFragment symptomChangeDialog;
+    protected static android.support.v4.app.DialogFragment planChangeDialog;
     public static int currentItemPosition;
     protected static FragmentManager fragmentManager;
     protected static ItemContentPassListener mCallback;
@@ -58,8 +59,10 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        itemChangeDialog = new ItemChangeDialogFragment();
+        symptomChangeDialog = new ItemChangeSymptomDialogFragment();
+        planChangeDialog = new ItemChangePlanDialogFragment();
         fragmentManager = getFragmentManager();
+        listOfPlans = new ArrayList<>();
 
         try {
             mCallback = (ItemContentPassListener) context;
@@ -73,8 +76,8 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        plans = new ArrayList<>();
-        symptoms = new ArrayList<>();
+//        plans = new ArrayList<>();
+//        symptoms = new ArrayList<>();
     }
 
     @Nullable
@@ -84,14 +87,25 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     }
 
     @Override
-    public void startDialogToChangeItemContent(int i, String s) {
+    public void startDialogToChangeSymptomContent(int i, String s) {
         currentItemPosition = i;
-        showItemChangeDialog(s);
+        showItemChangeSymptomDialog(s);
     }
 
-    private void showItemChangeDialog(String s) {
+    @Override
+    public void startDialogToChangePlanContent(int i, String s) {
+        currentItemPosition = i;
+        showItemChangePlanDialog(s);
+    }
+
+    private void showItemChangePlanDialog(String s) {
         mCallback.passData(s);
-        itemChangeDialog.show(fragmentManager, "ta");
+        planChangeDialog.show(fragmentManager, "ta");
+    }
+
+    private void showItemChangeSymptomDialog(String s) {
+        mCallback.passData(s);
+        symptomChangeDialog.show(fragmentManager, "ta");
     }
 
 }

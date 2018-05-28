@@ -123,7 +123,7 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
             View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragmentController.onItemClick(position, holder.symptomText.getText().toString());
+                    fragmentController.onSymptomItemClick(position, holder.symptomText.getText().toString());
                 }
             };
             holder.rootContainer.setOnClickListener(onClickListenerContainer);

@@ -7,7 +7,9 @@ package ru.ssermakov.newrecycler.view.Interfaces;
 public interface FragmentInterface {
 
 
-    void startDialogToChangeItemContent(int i, String s);
+    void startDialogToChangeSymptomContent(int i, String s);
+
+    void startDialogToChangePlanContent(int i, String s);
 
 //    void changeItemContentEvent(String s);
 }

@@ -1,6 +1,5 @@
 package ru.ssermakov.newrecycler.logic;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 
@@ -117,8 +116,12 @@ public class FragmentController extends AppCompatActivity {
         task.execute(id);
     }
 
-    public void onItemClick(int i, String s) {
-        fragmentInterface.startDialogToChangeItemContent(i, s);
+    public void onPlanItemClick(int position, String string) {
+        fragmentInterface.startDialogToChangePlanContent(position, string);
+    }
+
+    public void onSymptomItemClick(int position, String string) {
+        fragmentInterface.startDialogToChangeSymptomContent(position, string);
     }
 
 

@@ -5,14 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
@@ -21,23 +26,23 @@ import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.MainActivity;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
-import studio.carbonylgroup.textfieldboxes.SimpleTextChangedWatcher;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 /**
  * Created by btb_wild on 13.03.2018.
  */
 
-public class PlanFragment extends AbstractTabFragment implements View.OnClickListener, SimpleTextChangedWatcher {
+public class PlanFragment extends AbstractTabFragment implements View.OnClickListener {
 
 
     FloatingActionButton button;
 
     TextFieldBoxes textFieldBoxesPlans;
     ExtendedEditText extendedEditTextPlans;
-    private String allText;
+    private LayoutInflater layoutinflater;
     private Long caseId;
     public static final String KEY_POSITION = "POSITION";
+    public static CustomPlansAdapter adapter;
 
 
     public PlanFragment() {
@@ -61,13 +66,23 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
         textFieldBoxesPlans = view.findViewById(R.id.text_field_boxes_plan);
         extendedEditTextPlans = view.findViewById(R.id.extended_edit_text_plan);
-        plansListTextView = view.findViewById(R.id.plansListTextView);
+
+
         button = view.findViewById(R.id.floatingActionButton);
 
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_LIST_OF_PLANS)) {
+            listOfPlans = savedInstanceState.getStringArrayList(KEY_LIST_OF_PLANS);
+        }
 
-        textFieldBoxesPlans.setOnClickListener(this);
+        RecyclerView plansRecycler = view.findViewById(R.id.plans_recycler);
+        layoutinflater = getLayoutInflater();
+        plansRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+
         textFieldBoxesPlans.getEndIconImageButton().setOnClickListener(this);
-        textFieldBoxesPlans.setSimpleTextChangeWatcher(this);
+
+        adapter = new PlanFragment.CustomPlansAdapter();
+        plansRecycler.setAdapter(adapter);
+
         return view;
     }
 
@@ -109,7 +124,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
 
                     fragmentController.createSymptoms(caseId, (ArrayList<String>) SymptomsFragment.listOfSymptoms);
-                    fragmentController.createPlans(caseId, plans);
+                    fragmentController.createPlans(caseId, (ArrayList<String>) listOfPlans);
 
                     Intent i = new Intent(getContext(), MainActivity.class);
                     i.putExtra(KEY_POSITION, position);
@@ -122,43 +137,10 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
     }
 
 
-
     @Override
     public void onClick(View v) {
-        int viewId = v.getId();
-        if (viewId == R.id.text_field_boxes_plan) {
-            if (allText == null) {
-                allText = "1. ";
-                plansListTextView.setText(allText);
-            }
-        }
-
-        String s = extendedEditTextPlans.getText().toString().trim();
-        if (!s.equals("")) {
-            plans.add(s);
-            if (allText == null) {
-                allText = String.valueOf(plans.size()) + ". " + s + "\n" + String.valueOf(plans.size() + 1) + ". ";
-            } else {
-                allText += s + "\n" + String.valueOf(plans.size() + 1) + ". ";
-            }
-        }
+        listOfPlans.add(extendedEditTextPlans.getText().toString().trim());
         extendedEditTextPlans.setText("");
-    }
-
-    @Override
-    public void onTextChanged(String s, boolean b) {
-        String temp = allText;
-        if (s.equals("")) {
-            if (allText != null) {
-                temp = temp.substring(0, temp.length() - 3);
-                plansListTextView.setText(temp);
-            }
-        }
-        if (allText == null) {
-            plansListTextView.setText(s);
-        } else {
-            plansListTextView.setText(temp + s);
-        }
     }
 
     public static Fragment getInstance(Context context) {
@@ -171,8 +153,73 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         return fragment;
     }
 
+    private static final String KEY_LIST_OF_PLANS = "LIST_OF_PLANS";
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (!listOfPlans.isEmpty()) {
+            outState.putStringArrayList(KEY_LIST_OF_PLANS, (ArrayList<String>) listOfPlans);
+        }
+    }
+
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public class CustomPlansAdapter extends
+            RecyclerView.Adapter<CustomPlansAdapter.CustomPlansViewHolder> {
+
+        @Override
+        public CustomPlansViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = layoutinflater.inflate(R.layout.plan_item_recycler_layout, parent, false);
+            return new CustomPlansViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(final CustomPlansViewHolder holder, final int position) {
+            if (listOfPlans.isEmpty()) {
+
+                holder.planText.setVisibility(View.GONE);
+                holder.editImage.setVisibility(View.GONE);
+
+            } else {
+                holder.planText.setVisibility(View.VISIBLE);
+                holder.editImage.setVisibility(View.VISIBLE);
+
+                String symptom = listOfPlans.get(position);
+
+                holder.planText.setText(symptom);
+            }
+
+            View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragmentController.onPlanItemClick(position, holder.planText.getText().toString());
+                }
+            };
+            holder.rootContainer.setOnClickListener(onClickListenerContainer);
+        }
+
+        @Override
+        public int getItemCount() {
+            return listOfPlans.size();
+        }
+
+        class CustomPlansViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView planText;
+            private ImageView editImage;
+            private ConstraintLayout rootContainer;
+
+            CustomPlansViewHolder(View itemView) {
+                super(itemView);
+
+                rootContainer = itemView.findViewById(R.id.rootContainer);
+                planText = itemView.findViewById(R.id.planText);
+                editImage = itemView.findViewById(R.id.editImage);
+            }
+        }
+
     }
 
 }

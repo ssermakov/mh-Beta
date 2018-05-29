@@ -31,6 +31,7 @@ public interface CaseDao {
     @Delete
     void delete(Case fact);
 
+
     @Query("SELECT id FROM cases WHERE patientId = :patientId AND endDate IS NULL")
     List<Integer> selectOpenCaseId(Integer patientId);
 

@@ -6,10 +6,16 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+
+import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
+import ru.ssermakov.newrecycler.data.room.entity.Case;
+import ru.ssermakov.newrecycler.logic.BeginIllnessActivityController;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.logic.adapters.TabsPagerFragmentAdapter;
+import ru.ssermakov.newrecycler.view.Interfaces.BeginIllnessActivityInterface;
 import ru.ssermakov.newrecycler.view.fragments.AbstractTabFragment;
 import ru.ssermakov.newrecycler.view.fragments.ItemChangePlanDialogFragment;
 import ru.ssermakov.newrecycler.view.fragments.ItemChangeSymptomDialogFragment;
@@ -31,21 +37,55 @@ public class BeginIllnessActivity extends AppCompatActivity
     public static FragmentManager fm;
     public static String itemContent;
     public static String no_illness;
+    private int patientIdForEditIllness = -1;
+    private long caseId = -1;
+    public static Case aCase;
+    public static BeginIllnessActivityController controller;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_illness);
 
-        intent = getIntent();
-        id = intent.getIntExtra(MainController.EXTRA_ID, -1);
-        position = intent.getIntExtra(MainController.EXTRA_POSITION, -1);
+        getIncomingIntent();
         initTabs();
+        aCase = null;
+        if (patientIdForEditIllness != -1 && caseId != -1) {
+            try {
+                aCase = getCaseByCaseId(caseId);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         no_illness = getResources().getString(R.string.no_illness);
         fm = getFragmentManager();
 
 
+    }
+
+
+
+    private Case getCaseByCaseId(long caseId) throws ExecutionException, InterruptedException {
+        controller = new BeginIllnessActivityController(caseId);
+        return controller.getCase(caseId);
+    }
+
+    private void getIncomingIntent() {
+        intent = getIntent();
+        if (intent.hasExtra(MainController.EXTRA_ID) &&
+            intent.hasExtra(MainController.EXTRA_POSITION)) {
+
+            id = intent.getIntExtra(MainController.EXTRA_ID, -1);
+            position = intent.getIntExtra(MainController.EXTRA_POSITION, -1);
+        }
+        if (intent.hasExtra(PersonDetailActivity.KEY_PATIENT_ID) &&
+            intent.hasExtra(PersonDetailActivity.KEY_CASE_ID)) {
+
+            patientIdForEditIllness = intent.getIntExtra(PersonDetailActivity.KEY_PATIENT_ID, -1);
+            caseId = intent.getLongExtra(PersonDetailActivity.KEY_CASE_ID, -1);
+        }
     }
 
     @Override
@@ -104,4 +144,5 @@ public class BeginIllnessActivity extends AppCompatActivity
     public void passData(String data) {
         itemContent = data;
     }
+
 }

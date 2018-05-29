@@ -13,8 +13,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import ru.ssermakov.newrecycler.logic.BeginIllnessActivityController;
 import ru.ssermakov.newrecycler.logic.FragmentController;
+import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import ru.ssermakov.newrecycler.view.Interfaces.FragmentInterface;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 
@@ -24,6 +27,8 @@ import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 
 public class AbstractTabFragment extends Fragment implements FragmentInterface {
 
+
+    private BeginIllnessActivityController controller;
 
     public interface ItemContentPassListener {
         void passData(String data);
@@ -64,10 +69,22 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
         fragmentManager = getFragmentManager();
         listOfPlans = new ArrayList<>();
 
+        if (BeginIllnessActivity.aCase != null) {
+            setListOfPlans();
+        }
+
         try {
             mCallback = (ItemContentPassListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement ItemContentPassListener");
+        }
+    }
+
+    private void setListOfPlans() {
+        try {
+            listOfPlans = BeginIllnessActivity.controller.getListOfPlans();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -76,8 +93,6 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-//        plans = new ArrayList<>();
-//        symptoms = new ArrayList<>();
     }
 
     @Nullable
@@ -100,12 +115,12 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
 
     private void showItemChangePlanDialog(String s) {
         mCallback.passData(s);
-        planChangeDialog.show(fragmentManager, "ta");
+        planChangeDialog.show(fragmentManager, "planDialog");
     }
 
     private void showItemChangeSymptomDialog(String s) {
         mCallback.passData(s);
-        symptomChangeDialog.show(fragmentManager, "ta");
+        symptomChangeDialog.show(fragmentManager, "symptomDialog");
     }
 
 }

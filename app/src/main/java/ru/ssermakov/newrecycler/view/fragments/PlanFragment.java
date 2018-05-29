@@ -21,10 +21,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
+import ru.ssermakov.newrecycler.data.room.entity.Case;
 import ru.ssermakov.newrecycler.logic.FragmentController;
 import ru.ssermakov.newrecycler.logic.MainController;
 import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
+import ru.ssermakov.newrecycler.view.HistoryIllnessActivity;
 import ru.ssermakov.newrecycler.view.MainActivity;
+import ru.ssermakov.newrecycler.view.PersonDetailActivity;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
@@ -97,43 +100,77 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
                 if (SymptomsFragment.listOfSymptoms.size() == 0) {
                     BeginIllnessActivity.viewPager.setCurrentItem(1, true);
                 } else {
-
-                    String illnessName = extendedEditTextIllnessName.getText().toString().trim().toLowerCase();
-
-                    try {
-                        fragmentController.createIllness(illnessName);
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    if (BeginIllnessActivity.aCase == null) {
+                        createNewCase();
+                    } else {
+                        editCase(BeginIllnessActivity.aCase);
                     }
-
-                    try {
-                        caseId = fragmentController.createCase(
-                                id,
-                                fragmentController.getIllnessIdFromDb(illnessName),
-                                startDateTextView.getText().toString()
-                        );
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    fragmentController.togglePatientState(id);
-
-
-                    fragmentController.createSymptoms(caseId, (ArrayList<String>) SymptomsFragment.listOfSymptoms);
-                    fragmentController.createPlans(caseId, (ArrayList<String>) listOfPlans);
-
-                    Intent i = new Intent(getContext(), MainActivity.class);
-                    i.putExtra(KEY_POSITION, position);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);
                 }
 
             }
         });
+    }
+
+    private void editCase(Case aCase) {
+        String illnessName = extendedEditTextIllnessName.getText().toString().trim().toLowerCase();
+
+        try {
+            fragmentController.createIllness(illnessName);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            aCase.setIllnessId((long)fragmentController.getIllnessIdFromDb(illnessName));
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        aCase.setStartDate(fragmentController.convertStringToDate(
+                startDateTextView.getText().toString()
+        ));
+
+        fragmentController.updateCase(aCase);
+        fragmentController.updateSymptoms(aCase.getId(), (ArrayList<String>) SymptomsFragment.listOfSymptoms);
+        fragmentController.updatePlans(aCase.getId(), (ArrayList<String>) listOfPlans);
+
+        Intent i = new Intent(getContext(), HistoryIllnessActivity.class);
+        i.putExtra(PersonDetailActivity.KEY_CASE_ID, aCase.getId());
+        i.putExtra(PersonDetailActivity.KEY_PATIENT_ID, (int)(long) aCase.getPatientId());
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+
+    }
+
+
+    private void createNewCase() {
+        String illnessName = extendedEditTextIllnessName.getText().toString().trim().toLowerCase();
+
+        try {
+            fragmentController.createIllness(illnessName);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            caseId = fragmentController.createCase(
+                    id,
+                    fragmentController.getIllnessIdFromDb(illnessName),
+                    startDateTextView.getText().toString()
+            );
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        fragmentController.togglePatientState(id);
+
+
+        fragmentController.createSymptoms(caseId, (ArrayList<String>) SymptomsFragment.listOfSymptoms);
+        fragmentController.createPlans(caseId, (ArrayList<String>) listOfPlans);
+
+        Intent i = new Intent(getContext(), MainActivity.class);
+        i.putExtra(KEY_POSITION, position);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 
 

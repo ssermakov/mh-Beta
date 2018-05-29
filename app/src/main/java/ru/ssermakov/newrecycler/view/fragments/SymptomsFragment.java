@@ -16,8 +16,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
+import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
@@ -48,6 +50,11 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
 
         listOfSymptoms = new ArrayList<>();
 
+
+        if (BeginIllnessActivity.aCase != null) {
+            setListOfSymptoms();
+        }
+
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_LIST_OF_SYMPTOMS)) {
             listOfSymptoms = savedInstanceState.getStringArrayList(KEY_LIST_OF_SYMPTOMS);
         }
@@ -63,6 +70,14 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
 
 
         return view;
+    }
+
+    private void setListOfSymptoms() {
+        try {
+            listOfSymptoms = BeginIllnessActivity.controller.getListOfSymptoms();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

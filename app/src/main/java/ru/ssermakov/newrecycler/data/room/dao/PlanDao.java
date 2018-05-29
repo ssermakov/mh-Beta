@@ -32,4 +32,7 @@ public interface PlanDao {
 
     @Query("SELECT `plan` from plans WHERE caseId = :caseId")
     List<String> selectPlansByCaseId(Long caseId);
+
+    @Query("DELETE from plans WHERE caseId = :caseId")
+    void deletePlansByCaseId(Long caseId);
 }

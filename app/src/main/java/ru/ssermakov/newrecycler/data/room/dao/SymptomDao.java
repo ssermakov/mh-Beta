@@ -31,4 +31,9 @@ public interface SymptomDao {
 
     @Query("SELECT symptom from symptoms WHERE caseId = :caseId")
     List<String> selectSymptomsByCaseId(Long caseId);
+
+    @Query("DELETE from symptoms WHERE caseId = :caseId")
+    void deleteSymptomsByCaseId(Long caseId);
+
+
 }

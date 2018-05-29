@@ -19,8 +19,10 @@ import android.widget.SpinnerAdapter;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
+import ru.ssermakov.newrecycler.view.BeginIllnessActivity;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
@@ -32,7 +34,7 @@ public class DateFragment extends AbstractTabFragment implements View.OnClickLis
 
 
     private static final String KEY_START_DATE = "START_DATE";
-    TextFieldBoxes textFieldBoxesIllnessName;
+//    TextFieldBoxes textFieldBoxesIllnessName;
 
 
 /*    @Override
@@ -55,14 +57,37 @@ public class DateFragment extends AbstractTabFragment implements View.OnClickLis
         startDateTextView.setOnClickListener(this);
         dateHint.setOnClickListener(this);
 
-        textFieldBoxesIllnessName = view.findViewById(R.id.text_field_boxes_illness_name);
+//        textFieldBoxesIllnessName = view.findViewById(R.id.text_field_boxes_illness_name);
         extendedEditTextIllnessName = view.findViewById(R.id.extended_edit_text_illness_name);
 
         if (savedInstanceState != null) {
             startDateTextView.setText(savedInstanceState.getString(KEY_START_DATE));
         }
 
+        if (BeginIllnessActivity.aCase != null) {
+            setIllnessName();
+            setDate();
+        }
+
         return view;
+    }
+
+
+    private void setDate() {
+        try {
+            startDateTextView.setText(BeginIllnessActivity.controller.getStartDate());
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setIllnessName() {
+        try {
+            extendedEditTextIllnessName.setText(
+                    BeginIllnessActivity.controller.getIllnessName());
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

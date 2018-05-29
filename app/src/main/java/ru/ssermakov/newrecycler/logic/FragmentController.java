@@ -88,12 +88,40 @@ public class FragmentController extends AppCompatActivity {
         return task.get();
     }
 
+    public void updateCase(Case aCase) {
+        UpdateCaseTask task = new UpdateCaseTask();
+        task.execute(aCase);
+    }
+
     public void createSymptoms(Long caseId, ArrayList<String> symptoms) {
         for (String symptomString : symptoms) {
             Symptom symptom = new Symptom(caseId, symptomString.toLowerCase().trim());
             CreateSymptomTask task = new CreateSymptomTask();
             task.execute(symptom);
 
+        }
+    }
+
+    public void updateSymptoms(Long caseId, ArrayList<String> listOfSymptoms) {
+        HistoryIllnessController controller = new HistoryIllnessController(caseId);
+        List<String> symptomsList = null;
+        try {
+            symptomsList = controller.getListOfSymptoms();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (symptomsList != null) {
+            for (long i = 0; i < symptomsList.size(); i++) {
+                DeleteSymptomsByCaseId deleteTask = new DeleteSymptomsByCaseId();
+                deleteTask.execute(caseId);
+            }
+        }
+
+        for (String symptomString : listOfSymptoms) {
+            Symptom symptom = new Symptom(caseId, symptomString.toLowerCase().trim());
+            CreateSymptomTask task = new CreateSymptomTask();
+            task.execute(symptom);
         }
     }
 
@@ -104,6 +132,35 @@ public class FragmentController extends AppCompatActivity {
             task.execute(plan);
         } else {
             for (String planString : plans) {
+                Plan plan = new Plan(caseId, planString.toLowerCase().trim());
+                CreatePlanTask task = new CreatePlanTask();
+                task.execute(plan);
+            }
+        }
+    }
+
+    public void updatePlans(Long caseId, ArrayList<String> listOfPlans) {
+        HistoryIllnessController controller = new HistoryIllnessController(caseId);
+        List<String> plansList = null;
+        try {
+            plansList = controller.getListOfPlans();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (plansList != null) {
+            for (long i = 0; i < plansList.size(); i++) {
+                DeletePlansByCaseId deleteTask = new DeletePlansByCaseId();
+                deleteTask.execute(caseId);
+            }
+        }
+
+        if (listOfPlans.size() == 0 || listOfPlans.get(0) == null) {
+            Plan plan = new Plan(caseId, null);
+            CreatePlanTask task = new CreatePlanTask();
+            task.execute(plan);
+        } else {
+            for (String planString : listOfPlans) {
                 Plan plan = new Plan(caseId, planString.toLowerCase().trim());
                 CreatePlanTask task = new CreatePlanTask();
                 task.execute(plan);
@@ -166,7 +223,15 @@ public class FragmentController extends AppCompatActivity {
         }
     }
 
-    private Date convertStringToDate(String string) {
+//    private class UpdateSymptomTask extends AsyncTask<Symptom, Void, Void> {
+//        @Override
+//        protected Void doInBackground(Symptom... symptoms) {
+//            symptomDao.update(symptoms[0]);
+//            return null;
+//        }
+//    }
+
+    public Date convertStringToDate(String string) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = null;
         try {
@@ -185,12 +250,44 @@ public class FragmentController extends AppCompatActivity {
         }
     }
 
+    private class UpdatePlanTask extends AsyncTask<Plan, Void, Void> {
+        @Override
+        protected Void doInBackground(Plan... plans) {
+            planDao.update(plans[0]);
+            return null;
+        }
+    }
+
     private class TogglePatientStateTask extends AsyncTask<Integer, Void, Void> {
         @Override
         protected Void doInBackground(Integer... integers) {
             Patient patient = patientDao.getById(integers[0]);
             patient.setState("болеет");
             patientDao.update(patient);
+            return null;
+        }
+    }
+
+    private class UpdateCaseTask extends AsyncTask<Case, Void, Void> {
+        @Override
+        protected Void doInBackground(Case... cases) {
+            caseDao.update(cases[0]);
+            return null;
+        }
+    }
+
+    private class DeleteSymptomsByCaseId extends AsyncTask<Long, Void, Void> {
+        @Override
+        protected Void doInBackground(Long... longs) {
+            symptomDao.deleteSymptomsByCaseId(longs[0]);
+            return null;
+        }
+    }
+
+    private class DeletePlansByCaseId extends AsyncTask<Long, Void, Void> {
+        @Override
+        protected Void doInBackground(Long... longs) {
+            planDao.deletePlansByCaseId(longs[0]);
             return null;
         }
     }

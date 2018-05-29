@@ -26,6 +26,12 @@ public class DetailController {
     private PatientDao patientDao;
     private IllnessDao illnessDao;
 
+    public DetailController() {
+        caseDao = App.getInstance().getDb().caseDao();
+        patientDao = App.getInstance().getDb().patientDao();
+        illnessDao = App.getInstance().getDb().illnessDao();
+    }
+
     public DetailController(DetailActivityInterface detailActivityView) {
         this.detailActivityView = detailActivityView;
         caseDao = App.getInstance().getDb().caseDao();
@@ -78,7 +84,7 @@ public class DetailController {
         return format.format(startDate);
     }
 
-    public Illness getIllnessNameById(Long id) throws ExecutionException, InterruptedException {
+    public Illness getIllnessById(Long id) throws ExecutionException, InterruptedException {
         GetIllnessByIdTask task = new GetIllnessByIdTask();
         task.execute(id);
         return task.get();

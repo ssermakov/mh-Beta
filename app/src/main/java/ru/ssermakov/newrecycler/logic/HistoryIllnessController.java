@@ -23,7 +23,7 @@ public class HistoryIllnessController {
     private String endDate;
     private String illnessName;
     private String plansList;
-    private String symptomsList;
+    private String symptomsString;
 
     private CaseDao caseDao;
     private IllnessDao illnessDao;
@@ -31,6 +31,16 @@ public class HistoryIllnessController {
     private SymptomDao symptomDao;
 
     private Long caseId;
+
+
+    public HistoryIllnessController(Long caseId) {
+        this.caseId = caseId;
+
+        caseDao = App.getInstance().getDb().caseDao();
+        illnessDao = App.getInstance().getDb().illnessDao();
+        planDao = App.getInstance().getDb().planDao();
+        symptomDao = App.getInstance().getDb().symptomDao();
+    }
 
     public HistoryIllnessController(HistoryIllnessInterface historyIllnessInterface, Long caseId) {
         historyView = historyIllnessInterface;
@@ -47,8 +57,8 @@ public class HistoryIllnessController {
             startDate = getStartDate();
             endDate = getEndDate();
             illnessName = getIllnessName();
-            plansList = getPlansList();
-            symptomsList = getSymptomsList();
+            plansList = getStringOfPlans();
+            symptomsString = getStringOfSymptoms();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -59,18 +69,30 @@ public class HistoryIllnessController {
         setView();
     }
 
-    private String getSymptomsList() throws ExecutionException, InterruptedException {
+    private String getStringOfSymptoms() throws ExecutionException, InterruptedException {
         GetSymptomsListTask task = new GetSymptomsListTask();
         task.execute(caseId);
         List<String> list = task.get();
         return formatString(list);
     }
 
-    private String getPlansList() throws ExecutionException, InterruptedException {
+    public List<String> getListOfSymptoms() throws ExecutionException, InterruptedException {
+        GetSymptomsListTask task = new GetSymptomsListTask();
+        task.execute(caseId);
+        return task.get();
+    }
+
+    private String getStringOfPlans() throws ExecutionException, InterruptedException {
         GetPlansListTask task = new GetPlansListTask();
         task.execute(caseId);
         List<String> list = task.get();
         return formatString(list);
+    }
+
+    public List<String> getListOfPlans() throws ExecutionException, InterruptedException {
+        GetPlansListTask task = new GetPlansListTask();
+        task.execute(caseId);
+        return task.get();
     }
 
     private String formatString(List<String> list) {
@@ -87,14 +109,14 @@ public class HistoryIllnessController {
         return formattedString;
     }
 
-    private String getIllnessName() throws ExecutionException, InterruptedException {
+    public String getIllnessName() throws ExecutionException, InterruptedException {
         GetIllnessNameTask task = new GetIllnessNameTask();
         task.execute(caseId);
         return task.get();
     }
 
 
-    private String getStartDate() throws ExecutionException, InterruptedException {
+    public String getStartDate() throws ExecutionException, InterruptedException {
         GetStartDateTask task = new GetStartDateTask();
         task.execute(caseId);
         return task.get();
@@ -111,7 +133,7 @@ public class HistoryIllnessController {
         historyView.setEndDate(endDate);
         historyView.setIllnessName(illnessName);
         historyView.setPlans(plansList);
-        historyView.setSymptoms(symptomsList);
+        historyView.setSymptoms(symptomsString);
     }
 
     private class GetStartDateTask extends AsyncTask<Long, Void, String> {

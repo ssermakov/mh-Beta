@@ -45,8 +45,8 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_detail);
-        Intent i = getIntent();
-        id = i.getIntExtra(MainActivity.EXTRA_ID, -1);
+
+        getIncomingIntent();
 
         textViewHistory = findViewById(R.id.textViewHistory);
 
@@ -74,6 +74,15 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
 
     }
 
+    private void getIncomingIntent() {
+        Intent i = getIntent();
+        if (i.hasExtra(MainActivity.EXTRA_ID)) {
+            id = i.getIntExtra(MainActivity.EXTRA_ID, -1);
+        }
+        if (i.hasExtra(PersonDetailActivity.KEY_PATIENT_ID)) {
+            id = i.getIntExtra(PersonDetailActivity.KEY_PATIENT_ID, -1);
+        }
+    }
 
 
     @Override
@@ -143,7 +152,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
 
             Illness illness = null;
             try {
-                illness = detailController.getIllnessNameById(aCase.getIllnessId());
+                illness = detailController.getIllnessById(aCase.getIllnessId());
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -155,13 +164,14 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Long id =aCase.getId();
-
                     Intent intent = new Intent(PersonDetailActivity.this, HistoryIllnessActivity.class);
-                    intent.putExtra(KEY_CASE_ID, id);
+                    intent.putExtra(KEY_CASE_ID, aCase.getId());
+                    intent.putExtra(KEY_PATIENT_ID, patient.getId());
                     startActivity(intent);
                 }
             });
+
+
         }
 
         @Override

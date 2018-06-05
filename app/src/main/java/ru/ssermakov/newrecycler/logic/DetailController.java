@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -25,6 +26,7 @@ public class DetailController {
     private CaseDao caseDao;
     private PatientDao patientDao;
     private IllnessDao illnessDao;
+    private ArrayList<Integer> listOfSelectedItems;
 
     public DetailController() {
         caseDao = App.getInstance().getDb().caseDao();
@@ -38,10 +40,28 @@ public class DetailController {
         patientDao = App.getInstance().getDb().patientDao();
         illnessDao = App.getInstance().getDb().illnessDao();
 
+        listOfSelectedItems = new ArrayList<>();
+
 
         getListCasesFromDataSource();
         setAge();
         setFAB();
+    }
+
+    public void selectItem(int position) {
+        listOfSelectedItems.add(position);
+    }
+
+    public void removeItemFromSelected(int position) {
+        for (int i = 0; i < listOfSelectedItems.size(); i++) {
+            if (listOfSelectedItems.get(i) == position) {
+                listOfSelectedItems.remove(listOfSelectedItems.get(i));
+            }
+        }
+    }
+
+    public ArrayList<Integer> getListOfSelectedItems() {
+        return listOfSelectedItems;
     }
 
     private void setFAB() {
@@ -96,6 +116,16 @@ public class DetailController {
         return task.get();
     }
 
+    public void deleteCaseFromDb(Case aCase) {
+        DeleteCaseFromDataBaseTask task = new DeleteCaseFromDataBaseTask();
+        task.execute(aCase);
+    }
+
+    public void setPatientStateAtNotIll(Case currentCase) {
+        SetNotIllStateTask task = new SetNotIllStateTask();
+        task.execute((int)(long)currentCase.getPatientId());
+    }
+
     private class GetCasesByPatientIdTask extends AsyncTask<Integer, Void, List<Case>> {
 
         @Override
@@ -126,6 +156,25 @@ public class DetailController {
             Long dateOfBirth = patientDao.getDateOfBirth(integers[0]);
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             return timestamp.getTime() - dateOfBirth;
+        }
+    }
+
+    private class DeleteCaseFromDataBaseTask extends AsyncTask<Case, Void, Void> {
+        @Override
+        protected Void doInBackground(Case... cases) {
+            caseDao.delete(cases[0]);
+            return null;
+        }
+    }
+
+
+    private class SetNotIllStateTask extends AsyncTask<Integer, Void, Void> {
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            Patient patient = patientDao.getById(integers[0]);
+            patient.setState("не болеет");
+            patientDao.update(patient);
+            return null;
         }
     }
 }

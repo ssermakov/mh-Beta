@@ -41,7 +41,6 @@ import ru.ssermakov.newrecycler.data.room.entity.Patient;
 import ru.ssermakov.newrecycler.logic.AddPersonController;
 import ru.ssermakov.newrecycler.view.Interfaces.PersonActivityInterface;
 
-//TODO при смене ориентации сделать другой лэйаут... как в воцапе в group info
 public class AddPersonActivity extends AppCompatActivity
         implements PersonActivityInterface, View.OnClickListener {
 
@@ -76,13 +75,32 @@ public class AddPersonActivity extends AppCompatActivity
         addPatientController = new AddPersonController(this);
 
         if (getIntent().hasExtra(PersonDetailActivity.KEY_PATIENT_ID)) {
+
             patientId = getIntent().getIntExtra(PersonDetailActivity.KEY_PATIENT_ID, -1);
             editMode = true;
+
             addPatientController = new AddPersonController(this, patientId);
             addPatientController.setImage();
             addPatientController.setName();
             addPatientController.setDate();
+
+            floatingActionButton.setBackgroundResource(android.R.drawable.ic_menu_edit);
         }
+
+        if (    savedInstanceState != null &&
+                savedInstanceState.containsKey(KEY_IMAGE_PATH) &&
+                savedInstanceState.containsKey(KEY_AGE)) {
+
+            restoreDataFromSavedInstanceState(savedInstanceState);
+
+        }
+    }
+
+    private void restoreDataFromSavedInstanceState(Bundle savedInstanceState) {
+        age.setText(savedInstanceState.getString(KEY_AGE));
+        Bitmap bm = BitmapFactory.decodeFile(savedInstanceState.getString(KEY_IMAGE_PATH));
+        imageViewPhoto.setImageBitmap(bm);
+        filePath = savedInstanceState.getString(KEY_IMAGE_PATH, "error");
     }
 
     @Override
@@ -109,7 +127,6 @@ public class AddPersonActivity extends AppCompatActivity
                 Date dateOfBirth = convertStringToDate(age.getText().toString());
 
 
-//            new db
                 Patient patient = new Patient(patientName, dateOfBirth, patientState, filePath);
                 try {
                     this.id = addPatientController.addPatient(patient);
@@ -139,6 +156,16 @@ public class AddPersonActivity extends AppCompatActivity
         if (viewId == R.id.tv_age) {
             showDatePickDialog();
         }
+
+    }
+
+    private static final String KEY_IMAGE_PATH = "IMAGE_PATH";
+    private static final String KEY_AGE = "DATE";
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_IMAGE_PATH, filePath);
+        outState.putString(KEY_AGE, age.getText().toString());
 
     }
 
@@ -206,6 +233,7 @@ public class AddPersonActivity extends AppCompatActivity
 
     @Override
     public void setImage(Patient patient) {
+        filePath = patient.getImageUrl();
         Bitmap bm = BitmapFactory.decodeFile(patient.getImageUrl());
         imageViewPhoto.setImageBitmap(bm);
     }

@@ -257,7 +257,6 @@ public class MainController extends AppCompatActivity {
     private class HasSchemaTask extends AsyncTask<Integer, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Integer... integers) {
-            Integer integer = caseDao.isSchema(integers[0]);
             if (caseDao.isSchema(integers[0]) == 0) {
                 return false;
             }

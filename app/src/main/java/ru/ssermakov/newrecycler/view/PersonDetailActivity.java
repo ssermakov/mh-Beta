@@ -10,11 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -84,6 +87,33 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!detailController.getListOfSelectedItems().isEmpty()) {
+            getMenuInflater().inflate(R.menu.detail_activity_menu, menu);
+            adapter.notifyDataSetChanged();
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.sm_delete_person) {
+            Collections.sort(detailController.getListOfSelectedItems(), Collections.<Integer>reverseOrder());
+            for (int i = 0; i < detailController.getListOfSelectedItems().size(); i++) {
+                int k = detailController.getListOfSelectedItems().get(i);
+                Case currentCase = listOfCases.get(k);
+                detailController.deleteCaseFromDb(currentCase);
+                listOfCases.remove(k);
+                if (currentCase.getEndDate() == null) {
+                    detailController.setPatientStateAtNotIll(currentCase);
+                }
+                adapter.notifyDataSetChanged();
+            }
+            detailController.getListOfSelectedItems().clear();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onBackPressed() {
@@ -113,6 +143,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
     }
 
     public static final String KEY_PATIENT_ID = "PATIENT_ID";
+
     @Override
     public void onClick(View v) {
         int viewId = v.getId();
@@ -128,12 +159,26 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
 
         @Override
         public CustomPersonAdapter.CustomPersonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == 1) {
+                View v = layoutInflater.inflate(R.layout.person_detail_recycler_selected_layout, parent, false);
+                return new CustomPersonViewHolder(v);
+            }
             View v = layoutInflater.inflate(R.layout.person_detail_recycler_layout, parent, false);
             return new CustomPersonViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(CustomPersonAdapter.CustomPersonViewHolder holder, int position) {
+        public int getItemViewType(int position) {
+          for (int i = 0; i < detailController.getListOfSelectedItems().size(); i++) {
+              if (position == detailController.getListOfSelectedItems().get(i)) {
+                  return 1;
+              }
+          }
+            return 0;
+        }
+
+        @Override
+        public void onBindViewHolder(final CustomPersonAdapter.CustomPersonViewHolder holder, final int position) {
             final Case aCase = listOfCases.get(position);
 
             holder.startDate.setText(
@@ -141,6 +186,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
                             aCase.getStartDate()
                     )
             );
+
 
             if (aCase != null) {
                 holder.endDate.setText(
@@ -158,19 +204,40 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
             }
 
             holder.illnessName.setText(
-                    illness.getName()
+                    illness != null ? illness.getName() : null
             );
+
 
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(PersonDetailActivity.this, HistoryIllnessActivity.class);
-                    intent.putExtra(KEY_CASE_ID, aCase.getId());
-                    intent.putExtra(KEY_PATIENT_ID, patient.getId());
-                    startActivity(intent);
+                    if (detailController.getListOfSelectedItems().isEmpty()) {
+                        Intent intent = new Intent(PersonDetailActivity.this, HistoryIllnessActivity.class);
+                        intent.putExtra(KEY_CASE_ID, aCase.getId());
+                        intent.putExtra(KEY_PATIENT_ID, patient.getId());
+                        startActivity(intent);
+                    } else {
+                        if (detailController.getListOfSelectedItems().contains(position)) {
+                            detailController.removeItemFromSelected(position);
+                            notifyDataSetChanged();
+                            invalidateOptionsMenu();
+                        } else {
+                            detailController.selectItem(position);
+                            notifyDataSetChanged();
+                        }
+                    }
                 }
             });
 
+            holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    detailController.selectItem(position);
+                    notifyDataSetChanged();
+                    invalidateOptionsMenu();
+                    return true;
+                }
+            });
 
         }
 
@@ -178,6 +245,9 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
         public int getItemCount() {
             return listOfCases.size();
         }
+
+
+
 
         class CustomPersonViewHolder extends RecyclerView.ViewHolder {
 

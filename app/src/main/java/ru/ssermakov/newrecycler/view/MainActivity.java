@@ -189,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
         @Override
         public CustomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == 1) {
+                View v = layoutInflater.inflate(R.layout.f_recycler_one_element_layout, parent, false);
+                return new CustomViewHolder(v);
+            }
             View v = layoutInflater.inflate(R.layout.f_recycler_layout, parent, false);
             return new CustomViewHolder(v);
         }
@@ -235,13 +239,23 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Patient patient = listOfData.get(position);
+                    Patient patient = listOfData.get(holder.getAdapterPosition());
                     mainController.onPersonNameClick(patient);
                 }
             };
             holder.constraintLayout.setOnClickListener(onClickListenerContainer);
 
         }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (listOfData.size() == 1) {
+                return 1;
+            }
+            return 0;
+        }
+
+
 
         @Override
         public int getItemCount() {

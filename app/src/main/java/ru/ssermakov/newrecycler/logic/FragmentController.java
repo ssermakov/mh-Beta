@@ -41,6 +41,8 @@ public class FragmentController extends AppCompatActivity {
     private PlanDao planDao;
     private PatientDao patientDao;
 
+    private ArrayList<Integer> listOfSelectedItems;
+
     private FragmentInterface fragmentInterface;
 
     public FragmentController(AbstractTabFragment abstractTabFragment, FragmentInterface fragmentInterface) {
@@ -51,6 +53,8 @@ public class FragmentController extends AppCompatActivity {
         patientDao = App.getInstance().getDb().patientDao();
         this.abstractTabFragment = abstractTabFragment;
         this.fragmentInterface = fragmentInterface;
+
+        listOfSelectedItems = new ArrayList<>();
     }
 
 
@@ -179,6 +183,22 @@ public class FragmentController extends AppCompatActivity {
 
     public void onSymptomItemClick(int position, String string) {
         fragmentInterface.startDialogToChangeSymptomContent(position, string);
+    }
+
+    public void selectItem(int position) {
+        listOfSelectedItems.add(position);
+    }
+
+    public ArrayList<Integer> getListOfSelectedItems() {
+        return listOfSelectedItems;
+    }
+
+    public void removeItemFromSelected(int position) {
+        for (int i = 0; i < listOfSelectedItems.size(); i++) {
+            if (listOfSelectedItems.get(i) == position) {
+                listOfSelectedItems.remove(listOfSelectedItems.get(i));
+            }
+        }
     }
 
 

@@ -108,8 +108,9 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
                 if (currentCase.getEndDate() == null) {
                     detailController.setPatientStateAtNotIll(currentCase);
                 }
-                adapter.notifyDataSetChanged();
             }
+            adapter.notifyDataSetChanged();
+            invalidateOptionsMenu();
             detailController.getListOfSelectedItems().clear();
         }
         return super.onOptionsItemSelected(item);
@@ -217,12 +218,12 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
                         intent.putExtra(KEY_PATIENT_ID, patient.getId());
                         startActivity(intent);
                     } else {
-                        if (detailController.getListOfSelectedItems().contains(position)) {
-                            detailController.removeItemFromSelected(position);
+                        if (detailController.getListOfSelectedItems().contains(holder.getAdapterPosition())) {
+                            detailController.removeItemFromSelected(holder.getAdapterPosition());
                             notifyDataSetChanged();
                             invalidateOptionsMenu();
                         } else {
-                            detailController.selectItem(position);
+                            detailController.selectItem(holder.getAdapterPosition());
                             notifyDataSetChanged();
                         }
                     }
@@ -232,7 +233,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
             holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    detailController.selectItem(position);
+                    detailController.selectItem(holder.getAdapterPosition());
                     notifyDataSetChanged();
                     invalidateOptionsMenu();
                     return true;

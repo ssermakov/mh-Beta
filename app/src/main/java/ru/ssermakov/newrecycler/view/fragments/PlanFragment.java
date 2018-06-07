@@ -13,11 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
@@ -121,7 +119,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         }
 
         try {
-            aCase.setIllnessId((long)fragmentController.getIllnessIdFromDb(illnessName));
+            aCase.setIllnessId((long) fragmentController.getIllnessIdFromDb(illnessName));
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -135,7 +133,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
         Intent i = new Intent(getContext(), HistoryIllnessActivity.class);
         i.putExtra(PersonDetailActivity.KEY_CASE_ID, aCase.getId());
-        i.putExtra(PersonDetailActivity.KEY_PATIENT_ID, (int)(long) aCase.getPatientId());
+        i.putExtra(PersonDetailActivity.KEY_PATIENT_ID, (int) (long) aCase.getPatientId());
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
 
@@ -191,6 +189,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
     }
 
     private static final String KEY_LIST_OF_PLANS = "LIST_OF_PLANS";
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -214,24 +213,13 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
         @Override
         public void onBindViewHolder(final CustomPlansViewHolder holder, final int position) {
-            if (listOfPlans.isEmpty()) {
-
-                holder.planText.setVisibility(View.GONE);
-                holder.editImage.setVisibility(View.GONE);
-
-            } else {
-                holder.planText.setVisibility(View.VISIBLE);
-                holder.editImage.setVisibility(View.VISIBLE);
-
-                String symptom = listOfPlans.get(position);
-
-                holder.planText.setText(symptom);
-            }
+            String symptom = listOfPlans.get(holder.getAdapterPosition());
+            holder.planText.setText(symptom);
 
             View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragmentController.onPlanItemClick(position, holder.planText.getText().toString());
+                    fragmentController.onPlanItemClick(holder.getAdapterPosition(), holder.planText.getText().toString());
                 }
             };
             holder.rootContainer.setOnClickListener(onClickListenerContainer);
@@ -245,7 +233,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         class CustomPlansViewHolder extends RecyclerView.ViewHolder {
 
             private TextView planText;
-            private ImageView editImage;
+            //            private ImageView editImage;
             private ConstraintLayout rootContainer;
 
             CustomPlansViewHolder(View itemView) {
@@ -253,7 +241,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
                 rootContainer = itemView.findViewById(R.id.rootContainer);
                 planText = itemView.findViewById(R.id.planText);
-                editImage = itemView.findViewById(R.id.editImage);
+//                editImage = itemView.findViewById(R.id.editImage);
             }
         }
 

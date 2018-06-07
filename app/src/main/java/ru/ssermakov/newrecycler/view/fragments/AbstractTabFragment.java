@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,10 +84,15 @@ public class AbstractTabFragment extends Fragment implements FragmentInterface {
     private void setListOfPlans() {
         try {
             listOfPlans = BeginIllnessActivity.controller.getListOfPlans();
+            if (listOfPlans.get(0) == null) {
+                listOfPlans.remove(0);
+            }
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
     }
+
+
 
 
     @Override

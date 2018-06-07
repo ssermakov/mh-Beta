@@ -9,12 +9,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -33,7 +37,7 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
 
     TextFieldBoxes textFieldBoxesSymptoms;
     ExtendedEditText extendedEditTextSymptoms;
-    private LayoutInflater layoutinflater;
+    private LayoutInflater layoutInflater;
     public static List<String> listOfSymptoms;
     public static CustomSymptomsAdapter adapter;
 
@@ -49,6 +53,7 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
         extendedEditTextSymptoms = view.findViewById(R.id.extended_edit_text);
 
         listOfSymptoms = new ArrayList<>();
+        setHasOptionsMenu(true);
 
 
         if (BeginIllnessActivity.aCase != null) {
@@ -60,7 +65,7 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
         }
 
         RecyclerView symptomsRecycler = view.findViewById(R.id.symptoms_recycler);
-        layoutinflater = getLayoutInflater();
+        layoutInflater = getLayoutInflater();
         symptomsRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
         textFieldBoxesSymptoms.getEndIconImageButton().setOnClickListener(this);
@@ -104,6 +109,31 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
         }
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (!fragmentController.getListOfSelectedItems().isEmpty()) {
+            inflater.inflate(R.menu.symptoms_fragment_menu, menu);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.fragment_recycler_delete_person) {
+            Collections.sort(fragmentController.getListOfSelectedItems(), Collections.<Integer>reverseOrder());
+            for (int i = 0; i < fragmentController.getListOfSelectedItems().size(); i++) {
+                int k = fragmentController.getListOfSelectedItems().get(i);
+                listOfSymptoms.remove(k);
+            }
+            adapter.notifyDataSetChanged();
+            getActivity().invalidateOptionsMenu();
+            fragmentController.getListOfSelectedItems().clear();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onClick(View v) {
         listOfSymptoms.add(extendedEditTextSymptoms.getText().toString().trim());
@@ -115,7 +145,11 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
 
         @Override
         public CustomSymptomsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = layoutinflater.inflate(R.layout.symptom_item_recycler_layout, parent, false);
+            if (viewType == 1) {
+                View v = layoutInflater.inflate(R.layout.symptom_item_recycler_selected_layout, parent, false);
+                return new CustomSymptomsViewHolder(v);
+            }
+            View v = layoutInflater.inflate(R.layout.symptom_item_recycler_layout, parent, false);
             return new CustomSymptomsViewHolder(v);
         }
 
@@ -130,7 +164,7 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
                 holder.symptomText.setVisibility(View.VISIBLE);
                 holder.editImage.setVisibility(View.VISIBLE);
 
-                String symptom = listOfSymptoms.get(position);
+                String symptom = listOfSymptoms.get(holder.getAdapterPosition());
 
                 holder.symptomText.setText(symptom);
             }
@@ -138,10 +172,42 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
             View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragmentController.onSymptomItemClick(position, holder.symptomText.getText().toString());
+                    if (fragmentController.getListOfSelectedItems().isEmpty()) {
+                        fragmentController.onSymptomItemClick(holder.getAdapterPosition(), holder.symptomText.getText().toString());
+                    } else {
+                        if (fragmentController.getListOfSelectedItems().contains(holder.getAdapterPosition())) {
+                            fragmentController.removeItemFromSelected(holder.getAdapterPosition());
+                            notifyDataSetChanged();
+                            getActivity().invalidateOptionsMenu();
+                        } else {
+                            fragmentController.selectItem(holder.getAdapterPosition());
+                            notifyDataSetChanged();
+                        }
+                    }
                 }
             };
+
             holder.rootContainer.setOnClickListener(onClickListenerContainer);
+
+            holder.rootContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    fragmentController.selectItem(holder.getAdapterPosition());
+                    notifyDataSetChanged();
+                    getActivity().invalidateOptionsMenu();
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            for (int i = 0; i < fragmentController.getListOfSelectedItems().size(); i++) {
+                if (position == fragmentController.getListOfSelectedItems().get(i)) {
+                    return 1;
+                }
+            }
+            return 0;
         }
 
         @Override

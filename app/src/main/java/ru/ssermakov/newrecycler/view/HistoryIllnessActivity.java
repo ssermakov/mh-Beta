@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
@@ -73,6 +74,7 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
     @Override
     public void setPlans(String string) {
         TextView tvPlans = findViewById(R.id.tvPlans);
+        tvPlans.setMovementMethod(new ScrollingMovementMethod());
         tvPlans.setText(string);
 
     }
@@ -80,6 +82,7 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
     @Override
     public void setSymptoms(String string) {
         TextView tvSymptoms = findViewById(R.id.tvSymptoms);
+        tvSymptoms.setMovementMethod(new ScrollingMovementMethod());
         tvSymptoms.setText(string);
     }
 

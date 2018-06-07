@@ -11,11 +11,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
 import ru.ssermakov.newrecycler.R;
@@ -40,7 +44,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
     TextFieldBoxes textFieldBoxesPlans;
     ExtendedEditText extendedEditTextPlans;
-    private LayoutInflater layoutinflater;
+    private LayoutInflater layoutInflater;
     private Long caseId;
     public static final String KEY_POSITION = "POSITION";
     public static CustomPlansAdapter adapter;
@@ -76,13 +80,15 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         }
 
         RecyclerView plansRecycler = view.findViewById(R.id.plans_recycler);
-        layoutinflater = getLayoutInflater();
+        layoutInflater = getLayoutInflater();
         plansRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
         textFieldBoxesPlans.getEndIconImageButton().setOnClickListener(this);
 
         adapter = new PlanFragment.CustomPlansAdapter();
         plansRecycler.setAdapter(adapter);
+
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -171,6 +177,30 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         startActivity(i);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (!fragmentController.getListOfSelectedPlansItems().isEmpty()) {
+            inflater.inflate(R.menu.plans_fragment_menu, menu);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.plan_recycler_delete_person) {
+            Collections.sort(fragmentController.getListOfSelectedPlansItems(), Collections.<Integer>reverseOrder());
+            for (int i = 0; i < fragmentController.getListOfSelectedPlansItems().size(); i++) {
+                int k = fragmentController.getListOfSelectedPlansItems().get(i);
+                listOfPlans.remove(k);
+            }
+            adapter.notifyDataSetChanged();
+            getActivity().invalidateOptionsMenu();
+            fragmentController.getListOfSelectedPlansItems().clear();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -207,7 +237,11 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
 
         @Override
         public CustomPlansViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = layoutinflater.inflate(R.layout.plan_item_recycler_layout, parent, false);
+            if (viewType == 1) {
+                View v = layoutInflater.inflate(R.layout.plan_item_recycler_selected_layout, parent, false);
+                return new CustomPlansViewHolder(v);
+            }
+            View v = layoutInflater.inflate(R.layout.plan_item_recycler_layout, parent, false);
             return new CustomPlansViewHolder(v);
         }
 
@@ -219,10 +253,41 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
             View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragmentController.onPlanItemClick(holder.getAdapterPosition(), holder.planText.getText().toString());
+                    if (fragmentController.getListOfSelectedPlansItems().isEmpty()) {
+                        fragmentController.onPlanItemClick(holder.getAdapterPosition(), holder.planText.getText().toString());
+                    } else {
+                        if (fragmentController.getListOfSelectedPlansItems().contains(holder.getAdapterPosition())) {
+                            fragmentController.removePlanItemFromSelected(holder.getAdapterPosition());
+                            notifyDataSetChanged();
+                            getActivity().invalidateOptionsMenu();
+                        } else {
+                            fragmentController.selectPlanItem(holder.getAdapterPosition());
+                            notifyDataSetChanged();
+                        }
+                    }
                 }
             };
             holder.rootContainer.setOnClickListener(onClickListenerContainer);
+
+            holder.rootContainer.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    fragmentController.selectPlanItem(holder.getAdapterPosition());
+                    notifyDataSetChanged();
+                    getActivity().invalidateOptionsMenu();
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            for (int i = 0; i < fragmentController.getListOfSelectedPlansItems().size(); i++) {
+                if (position == fragmentController.getListOfSelectedPlansItems().get(i)) {
+                    return 1;
+                }
+            }
+            return 0;
         }
 
         @Override

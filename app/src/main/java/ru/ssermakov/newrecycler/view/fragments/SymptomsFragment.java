@@ -113,7 +113,7 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if (!fragmentController.getListOfSelectedItems().isEmpty()) {
+        if (!fragmentController.getListOfSelectedSymptomsItems().isEmpty()) {
             inflater.inflate(R.menu.symptoms_fragment_menu, menu);
             adapter.notifyDataSetChanged();
         }
@@ -121,15 +121,15 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.fragment_recycler_delete_person) {
-            Collections.sort(fragmentController.getListOfSelectedItems(), Collections.<Integer>reverseOrder());
-            for (int i = 0; i < fragmentController.getListOfSelectedItems().size(); i++) {
-                int k = fragmentController.getListOfSelectedItems().get(i);
+        if (item.getItemId() == R.id.symptom_recycler_delete_person) {
+            Collections.sort(fragmentController.getListOfSelectedSymptomsItems(), Collections.<Integer>reverseOrder());
+            for (int i = 0; i < fragmentController.getListOfSelectedSymptomsItems().size(); i++) {
+                int k = fragmentController.getListOfSelectedSymptomsItems().get(i);
                 listOfSymptoms.remove(k);
             }
             adapter.notifyDataSetChanged();
             getActivity().invalidateOptionsMenu();
-            fragmentController.getListOfSelectedItems().clear();
+            fragmentController.getListOfSelectedSymptomsItems().clear();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -172,15 +172,15 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
             View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (fragmentController.getListOfSelectedItems().isEmpty()) {
+                    if (fragmentController.getListOfSelectedSymptomsItems().isEmpty()) {
                         fragmentController.onSymptomItemClick(holder.getAdapterPosition(), holder.symptomText.getText().toString());
                     } else {
-                        if (fragmentController.getListOfSelectedItems().contains(holder.getAdapterPosition())) {
-                            fragmentController.removeItemFromSelected(holder.getAdapterPosition());
+                        if (fragmentController.getListOfSelectedSymptomsItems().contains(holder.getAdapterPosition())) {
+                            fragmentController.removeSymptomItemFromSelected(holder.getAdapterPosition());
                             notifyDataSetChanged();
                             getActivity().invalidateOptionsMenu();
                         } else {
-                            fragmentController.selectItem(holder.getAdapterPosition());
+                            fragmentController.selectSymptomItem(holder.getAdapterPosition());
                             notifyDataSetChanged();
                         }
                     }
@@ -192,7 +192,7 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
             holder.rootContainer.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    fragmentController.selectItem(holder.getAdapterPosition());
+                    fragmentController.selectSymptomItem(holder.getAdapterPosition());
                     notifyDataSetChanged();
                     getActivity().invalidateOptionsMenu();
                     return true;
@@ -202,8 +202,8 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
 
         @Override
         public int getItemViewType(int position) {
-            for (int i = 0; i < fragmentController.getListOfSelectedItems().size(); i++) {
-                if (position == fragmentController.getListOfSelectedItems().get(i)) {
+            for (int i = 0; i < fragmentController.getListOfSelectedSymptomsItems().size(); i++) {
+                if (position == fragmentController.getListOfSelectedSymptomsItems().get(i)) {
                     return 1;
                 }
             }

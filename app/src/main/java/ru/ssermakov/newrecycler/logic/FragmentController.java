@@ -41,7 +41,8 @@ public class FragmentController extends AppCompatActivity {
     private PlanDao planDao;
     private PatientDao patientDao;
 
-    private ArrayList<Integer> listOfSelectedItems;
+    private ArrayList<Integer> listOfSelectedSymptomsItems;
+    private ArrayList<Integer> listOfSelectedPlansItems;
 
     private FragmentInterface fragmentInterface;
 
@@ -54,7 +55,8 @@ public class FragmentController extends AppCompatActivity {
         this.abstractTabFragment = abstractTabFragment;
         this.fragmentInterface = fragmentInterface;
 
-        listOfSelectedItems = new ArrayList<>();
+        listOfSelectedSymptomsItems = new ArrayList<>();
+        listOfSelectedPlansItems = new ArrayList<>();
     }
 
 
@@ -185,18 +187,34 @@ public class FragmentController extends AppCompatActivity {
         fragmentInterface.startDialogToChangeSymptomContent(position, string);
     }
 
-    public void selectItem(int position) {
-        listOfSelectedItems.add(position);
+    public void selectSymptomItem(int position) {
+        listOfSelectedSymptomsItems.add(position);
     }
 
-    public ArrayList<Integer> getListOfSelectedItems() {
-        return listOfSelectedItems;
+    public ArrayList<Integer> getListOfSelectedSymptomsItems() {
+        return listOfSelectedSymptomsItems;
     }
 
-    public void removeItemFromSelected(int position) {
-        for (int i = 0; i < listOfSelectedItems.size(); i++) {
-            if (listOfSelectedItems.get(i) == position) {
-                listOfSelectedItems.remove(listOfSelectedItems.get(i));
+    public void removeSymptomItemFromSelected(int position) {
+        for (int i = 0; i < listOfSelectedSymptomsItems.size(); i++) {
+            if (listOfSelectedSymptomsItems.get(i) == position) {
+                listOfSelectedSymptomsItems.remove(listOfSelectedSymptomsItems.get(i));
+            }
+        }
+    }
+
+    public void selectPlanItem(int position) {
+        listOfSelectedPlansItems.add(position);
+    }
+
+    public ArrayList<Integer> getListOfSelectedPlansItems() {
+        return listOfSelectedPlansItems;
+    }
+
+    public void removePlanItemFromSelected(int position) {
+        for (int i = 0; i < listOfSelectedPlansItems.size(); i++) {
+            if (listOfSelectedPlansItems.get(i) == position) {
+                listOfSelectedPlansItems.remove(listOfSelectedPlansItems.get(i));
             }
         }
     }

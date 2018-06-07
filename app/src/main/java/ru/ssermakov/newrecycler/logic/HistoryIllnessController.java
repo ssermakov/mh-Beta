@@ -67,6 +67,11 @@ public class HistoryIllnessController {
 
 
         setView();
+        setAnimationFAB();
+    }
+
+    private void setAnimationFAB() {
+        historyView.setAnimationEditFAB();
     }
 
     private String getStringOfSymptoms() throws ExecutionException, InterruptedException {

@@ -12,4 +12,5 @@ public interface HistoryIllnessInterface {
 
     void setSymptoms (String symptomsString);
 
+    void setAnimationEditFAB();
 }

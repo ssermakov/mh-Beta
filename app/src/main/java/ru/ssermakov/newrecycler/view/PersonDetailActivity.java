@@ -139,7 +139,7 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
     }
 
     @Override
-    public void setEditFAB() {
+    public void setAnimationEditFAB() {
         Utils.scale(fab, 400);
     }
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.ssermakov.newrecycler.R;
+import ru.ssermakov.newrecycler.Utils.Utils;
 import ru.ssermakov.newrecycler.logic.HistoryIllnessController;
 import ru.ssermakov.newrecycler.view.Interfaces.HistoryIllnessInterface;
 
@@ -18,6 +19,7 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
 
     private Long caseId;
     private int patientId;
+    private FloatingActionButton editButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +27,8 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
         setContentView(R.layout.activity_history_illness);
 
         getIncomingIntent();
-        new HistoryIllnessController(this, caseId);
 
-        FloatingActionButton editButton = findViewById(R.id.fabEditIllness);
+        editButton = findViewById(R.id.fabEditIllness);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,6 +38,8 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
                 startActivity(i);
             }
         });
+
+        new HistoryIllnessController(this, caseId);
 
     }
 
@@ -84,6 +87,11 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
         TextView tvSymptoms = findViewById(R.id.tvSymptoms);
         tvSymptoms.setMovementMethod(new ScrollingMovementMethod());
         tvSymptoms.setText(string);
+    }
+
+    @Override
+    public void setAnimationEditFAB() {
+        Utils.scale(editButton, 400);
     }
 
 

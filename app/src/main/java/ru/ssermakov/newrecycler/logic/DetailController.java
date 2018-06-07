@@ -45,7 +45,7 @@ public class DetailController {
 
         getListCasesFromDataSource();
         setAge();
-        setFAB();
+        setAnimationFAB();
     }
 
     public void selectItem(int position) {
@@ -64,8 +64,8 @@ public class DetailController {
         return listOfSelectedItems;
     }
 
-    private void setFAB() {
-        detailActivityView.setEditFAB();
+    private void setAnimationFAB() {
+        detailActivityView.setAnimationEditFAB();
     }
 
     private void setAge() {

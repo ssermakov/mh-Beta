@@ -79,18 +79,23 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
             listOfPlans = savedInstanceState.getStringArrayList(KEY_LIST_OF_PLANS);
         }
 
+        if (BeginIllnessActivity.intent.hasExtra(PersonDetailActivity.KEY_PATIENT_ID)) {
+            button.setImageResource(android.R.drawable.ic_menu_edit);
+        }
+
         RecyclerView plansRecycler = view.findViewById(R.id.plans_recycler);
         layoutInflater = getLayoutInflater();
         plansRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
         textFieldBoxesPlans.getEndIconImageButton().setOnClickListener(this);
 
-        adapter = new PlanFragment.CustomPlansAdapter();
+        adapter = new CustomPlansAdapter();
         plansRecycler.setAdapter(adapter);
 
         setHasOptionsMenu(true);
 
         return view;
+
     }
 
     @Override
@@ -136,6 +141,7 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
         fragmentController.updateCase(aCase);
         fragmentController.updateSymptoms(aCase.getId(), (ArrayList<String>) SymptomsFragment.listOfSymptoms);
         fragmentController.updatePlans(aCase.getId(), (ArrayList<String>) listOfPlans);
+
 
         Intent i = new Intent(getContext(), HistoryIllnessActivity.class);
         i.putExtra(PersonDetailActivity.KEY_CASE_ID, aCase.getId());

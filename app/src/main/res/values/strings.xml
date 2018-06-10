@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">New Recycler</string>
+    <string name="app_name">Anamnesis</string>
     <string name="good_state">не болеет</string>
     <string name="bad_state">болеет</string>
     <string name="has_schema">Лечение назначено</string>
@@ -7,16 +7,19 @@
     <string name="bless_you">Будьте Здоровы!</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
 
-    <string name="tab_item_start_date">start date</string>
-    <string name="tab_item_symptoms">symptoms</string>
-    <string name="tab_item_plan">plan</string>
+    <string name="tab_item_start_date">Дата начала болезни</string>
+    <string name="tab_item_symptoms">симптомы</string>
+    <string name="tab_item_plan">схема лечения</string>
 
 
     <string name="action_settings">Settings</string>
     <string name="noCure">Лечение не назначено</string>
-    <string name="history">History</string>
-    <string name="add_patient">Add Patient</string>
+    <string name="history">история</string>
+    <string name="add_patient">добавить</string>
     <string name="enter_plan">Вводите назначения врача по одному.</string>
     <string name="schema">Схема лечения</string>
-    <string name="no_illness">illness was not entered</string>
+    <string name="no_illness">нет названия</string>
+    <string name="symptoms">Симптомы</string>
+    <string name="plan">Схема лечения</string>
+    <string name="no_plans">лечение не назначено</string>
 </resources>

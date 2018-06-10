@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
 //    compileSdkVersion 27
+    signingConfigs {
+        firstConfig {
+            keyAlias 'keyForAnamnesis'
+            keyPassword 'btb_wildKserksErmakov77'
+            storeFile file('H:/my_android_keystore.jks')
+            storePassword 'btb_wildKserksErmakov77'
+        }
+    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "ru.ssermakov.newrecycler"
@@ -15,8 +23,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.firstConfig
         }
-
 //        debug {
 //            applicationIdSuffix ".debug"
 //            debuggable true
@@ -37,12 +45,9 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.3'
     implementation files('libs/android-round-textview-master/gradle/wrapper/gradle-wrapper.jar')
-
     // Room (use 1.1.0-beta1 for latest beta)
-    implementation "android.arch.persistence.room:runtime:1.0.0"
+    implementation 'android.arch.persistence.room:runtime:1.0.0'
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
-
     //dbinspector : 3.4.1
-//    debugImplementation 'im.dino:dbinspector:3.4.1'
-
+    //    debugImplementation 'im.dino:dbinspector:3.4.1'
 }

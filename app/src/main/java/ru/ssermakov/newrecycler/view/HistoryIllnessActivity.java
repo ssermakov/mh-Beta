@@ -39,7 +39,7 @@ public class HistoryIllnessActivity extends AppCompatActivity implements History
             }
         });
 
-        new HistoryIllnessController(this, caseId);
+        new HistoryIllnessController(HistoryIllnessActivity.this,this, caseId);
 
     }
 

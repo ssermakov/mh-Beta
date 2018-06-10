@@ -8,12 +8,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import ru.ssermakov.newrecycler.R;
 import ru.ssermakov.newrecycler.app.App;
 import ru.ssermakov.newrecycler.data.room.dao.CaseDao;
 import ru.ssermakov.newrecycler.data.room.dao.IllnessDao;
 import ru.ssermakov.newrecycler.data.room.dao.PlanDao;
 import ru.ssermakov.newrecycler.data.room.dao.SymptomDao;
 import ru.ssermakov.newrecycler.data.room.entity.Case;
+import ru.ssermakov.newrecycler.view.HistoryIllnessActivity;
 import ru.ssermakov.newrecycler.view.Interfaces.HistoryIllnessInterface;
 
 public class HistoryIllnessController {
@@ -33,7 +35,7 @@ public class HistoryIllnessController {
     private Long caseId;
 
 
-    public HistoryIllnessController(Long caseId) {
+    HistoryIllnessController(Long caseId) {
         this.caseId = caseId;
 
         caseDao = App.getInstance().getDb().caseDao();
@@ -42,7 +44,7 @@ public class HistoryIllnessController {
         symptomDao = App.getInstance().getDb().symptomDao();
     }
 
-    public HistoryIllnessController(HistoryIllnessInterface historyIllnessInterface, Long caseId) {
+    public HistoryIllnessController(HistoryIllnessActivity context, HistoryIllnessInterface historyIllnessInterface, Long caseId) {
         historyView = historyIllnessInterface;
         this.caseId = caseId;
 
@@ -52,16 +54,13 @@ public class HistoryIllnessController {
         symptomDao = App.getInstance().getDb().symptomDao();
 
 
-
         try {
             startDate = getStartDate();
             endDate = getEndDate();
             illnessName = getIllnessName();
-            plansList = getStringOfPlans();
-            symptomsString = getStringOfSymptoms();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+            plansList = getStringOfPlans(context);
+            symptomsString = getStringOfSymptoms(context);
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -74,11 +73,11 @@ public class HistoryIllnessController {
         historyView.setAnimationEditFAB();
     }
 
-    private String getStringOfSymptoms() throws ExecutionException, InterruptedException {
+    private String getStringOfSymptoms(HistoryIllnessActivity historyView) throws ExecutionException, InterruptedException {
         GetSymptomsListTask task = new GetSymptomsListTask();
         task.execute(caseId);
         List<String> list = task.get();
-        return formatString(list);
+        return formatString(historyView, list);
     }
 
     public List<String> getListOfSymptoms() throws ExecutionException, InterruptedException {
@@ -87,11 +86,11 @@ public class HistoryIllnessController {
         return task.get();
     }
 
-    private String getStringOfPlans() throws ExecutionException, InterruptedException {
+    private String getStringOfPlans(HistoryIllnessActivity historyView) throws ExecutionException, InterruptedException {
         GetPlansListTask task = new GetPlansListTask();
         task.execute(caseId);
         List<String> list = task.get();
-        return formatString(list);
+        return formatString(historyView, list);
     }
 
     public List<String> getListOfPlans() throws ExecutionException, InterruptedException {
@@ -100,12 +99,15 @@ public class HistoryIllnessController {
         return task.get();
     }
 
-    private String formatString(List<String> list) {
+    /*
+    TODO переделать с помощью StringBuilder
+    */
+    private String formatString(HistoryIllnessActivity historyView, List<String> list) {
         int k = 1;
         String formattedString = "";
         for (String i : list) {
             if (list.get(0) == null) {
-               return "no plans";
+                return historyView.getString(R.string.no_plans);
             } else {
                 formattedString = formattedString + k + ". " + i + "\n";
                 k++;
@@ -174,14 +176,14 @@ public class HistoryIllnessController {
     private class GetPlansListTask extends AsyncTask<Long, Void, List<String>> {
         @Override
         protected List<String> doInBackground(Long... longs) {
-            return  planDao.selectPlansByCaseId(longs[0]);
+            return planDao.selectPlansByCaseId(longs[0]);
         }
     }
 
     private class GetSymptomsListTask extends AsyncTask<Long, Void, List<String>> {
         @Override
         protected List<String> doInBackground(Long... longs) {
-            return  symptomDao.selectSymptomsByCaseId(longs[0]);
+            return symptomDao.selectSymptomsByCaseId(longs[0]);
         }
     }
 }

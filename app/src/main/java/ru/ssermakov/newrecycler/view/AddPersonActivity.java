@@ -82,9 +82,8 @@ public class AddPersonActivity extends AppCompatActivity
             addPatientController = new AddPersonController(this, patientId);
             addPatientController.setImage();
             addPatientController.setName();
-            addPatientController.setDate();
 
-            floatingActionButton.setBackgroundResource(android.R.drawable.ic_menu_edit);
+            floatingActionButton.setImageResource(android.R.drawable.ic_menu_edit);
         }
 
         if (    savedInstanceState != null &&

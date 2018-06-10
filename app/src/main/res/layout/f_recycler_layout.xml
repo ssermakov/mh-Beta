@@ -60,7 +60,7 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="#000000"
                 android:textSize="28sp"
-                app:layout_constraintEnd_toStartOf="@+id/textViewAge"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,41 +68,44 @@
                 android:id="@+id/textViewAge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:text="3 года"
                 android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toTopOf="@+id/textViewStatus"
+                app:layout_constraintStart_toEndOf="@+id/img"
+                app:layout_constraintTop_toBottomOf="@+id/textViewName" />
 
             <TextView
                 android:id="@+id/textViewStatus"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:singleLine="false"
                 android:textAlignment="textStart"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/img"
-                app:layout_constraintTop_toBottomOf="@+id/textViewName"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Status" />
 
             <TextView
                 android:id="@+id/has_cure"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="32dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/noCure"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/img"
                 app:layout_constraintTop_toBottomOf="@+id/textViewStatus" />
 

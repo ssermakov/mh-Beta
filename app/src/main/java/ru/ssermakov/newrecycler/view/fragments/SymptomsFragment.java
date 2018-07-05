@@ -118,7 +118,11 @@ public class SymptomsFragment extends AbstractTabFragment implements View.OnClic
             adapter.notifyDataSetChanged();
         }
     }
-
+    /*
+     * TODO переделать весь этот велосипед с выделением и удалением элементов ресайклера с нормальной коллекцией. Поменять тип listOfSelectedItems.
+     * TODO переписать с использованием итератора (foreach)
+     *
+     * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.symptom_recycler_delete_person) {

@@ -191,7 +191,11 @@ public class PlanFragment extends AbstractTabFragment implements View.OnClickLis
             adapter.notifyDataSetChanged();
         }
     }
-
+    /*
+     * TODO переделать весь этот велосипед с выделением и удалением элементов ресайклера с нормальной коллекцией. Поменять тип listOfSelectedItems.
+     * TODO переписать с использованием итератора
+     *
+     * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.plan_recycler_delete_person) {

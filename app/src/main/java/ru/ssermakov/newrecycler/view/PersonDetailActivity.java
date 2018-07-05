@@ -95,7 +95,11 @@ public class PersonDetailActivity extends AppCompatActivity implements DetailAct
         }
         return super.onCreateOptionsMenu(menu);
     }
-
+/*
+* TODO переделать весь этот велосипед с выделением и удалением элементов ресайклера с нормальной коллекцией. Поменять тип listOfSelectedItems.
+* TODO переписать с использованием итератора (foreach)
+*
+* */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.sm_delete_person) {

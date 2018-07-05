@@ -2,6 +2,8 @@ package ru.ssermakov.newrecycler.view;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -23,9 +26,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -41,7 +47,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     private static final int MY_PERMISSIONS_REQUEST_READ_MEDIA = 23;
     public static final String EXTRA_ID = "ID";
     public static final String EXTRA_POSITION = "POSITION";
-    private List<Patient> listOfData;
+    private List<Patient> listOfPatientsFiltered;
+    private List<Patient> listOfPatients;
 
     private LayoutInflater layoutInflater;
     private RecyclerView recyclerView;
@@ -49,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
     private MainController mainController;
     private Long id;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
     @Override
     public void setUpAdapterAndView(List<Patient> listOfData) {
-        this.listOfData = listOfData;
+        this.listOfPatientsFiltered = listOfData;
+        this.listOfPatients = listOfData;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CustomAdapter();
         recyclerView.setAdapter(adapter);
@@ -119,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             }
 
 
-
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
@@ -127,13 +135,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
                     mainController.onPersonSwipedToChangeState(
                             position,
-                            listOfData.get(position),
+                            listOfPatientsFiltered.get(position),
                             getBaseContext());
 
                 } else {
                     mainController.onPersonSwipedToDelete(
                             position,
-                            listOfData.get(position));
+                            listOfPatientsFiltered.get(position));
 
                 }
             }
@@ -161,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
     @Override
     public void deletePersonAt(int position) {
-        listOfData.remove(position);
+        listOfPatientsFiltered.remove(position);
         adapter.notifyItemRemoved(position);
 
     }
@@ -169,6 +177,25 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.first_menu, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.fm_search_person).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -177,14 +204,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
         if (item.getItemId() == R.id.fm_add_person) {
             mainController.onAddPersonClick();
         }
-//        if (item.getItemId() == R.id.fm_search_person) {
-//
-//            showToast("Search");
-//        }
+        if (item.getItemId() == R.id.fm_search_person) {
+
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
-    private class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder> {
+    private class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomViewHolder>
+            implements Filterable {
 
 
         @Override
@@ -199,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
         @Override
         public void onBindViewHolder(final CustomViewHolder holder, final int position) {
-            Patient patient = listOfData.get(position);
+            Patient patient = listOfPatientsFiltered.get(position);
 
             holder.name.setText(
                     patient.getName()
@@ -239,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
             View.OnClickListener onClickListenerContainer = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Patient patient = listOfData.get(holder.getAdapterPosition());
+                    Patient patient = listOfPatientsFiltered.get(holder.getAdapterPosition());
                     mainController.onPersonNameClick(patient);
                 }
             };
@@ -249,17 +277,46 @@ public class MainActivity extends AppCompatActivity implements MainActivityViewI
 
         @Override
         public int getItemViewType(int position) {
-            if (listOfData.size() == 1) {
+            if (listOfPatientsFiltered.size() == 1) {
                 return 1;
             }
             return 0;
         }
 
 
-
         @Override
         public int getItemCount() {
-            return listOfData.size();
+            return listOfPatientsFiltered.size();
+        }
+
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    String charString = constraint.toString();
+                    if (charString.isEmpty()) {
+                        listOfPatientsFiltered = listOfPatients;
+                    } else {
+                        List<Patient> filteredList = new ArrayList<>();
+                        for (Patient patient : listOfPatients) {
+                            if (patient.getName().toLowerCase().contains(charString.toLowerCase())) {
+                                filteredList.add(patient);
+                            }
+                        }
+                        listOfPatientsFiltered = filteredList;
+                    }
+                    FilterResults results = new FilterResults();
+                    results.values = listOfPatientsFiltered;
+                    return results;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    listOfPatientsFiltered = (List<Patient>) results.values;
+                    notifyDataSetChanged();
+                }
+            };
         }
 
         class CustomViewHolder extends RecyclerView.ViewHolder {
